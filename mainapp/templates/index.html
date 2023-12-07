@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+
+{% include "head.html" %}
+{% include "header.html" %}
+<body>
+<div id="bg" class="py-5 text-center">
+    <div class="col-lg-6 col-md-8 mx-auto">
+    </div>
+</div>
+<br/><br/><br/><br/>
+<section class="wrapper">
+    <div class="container-fostrap">
+        <div>
+            <h1 class="heading">
+                MAKE ME UP!
+            </h1>
+            <h4>당신에게 맞는 샬라샬라샤랄</h4>
+            <br/><br/><br/>
+        </div>
+        <div class="content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4">
+                        <div class="card">
+                            <a class="img-card">
+                                <img src="/static/image/aaaaa.jpg"/>
+                            </a>
+                            <div class="card-content">
+                                <h4 class="card-title text-center">
+                                    <a> 퍼스널 컬러 진단
+                                    </a>
+                                </h4>
+                                <p class="">
+                                    내용
+                                </p>
+                            </div>
+                            <div class="card-read-more">
+                                <button class="custom-btn btn-12" type="button"
+                                        onclick="window.location.href='{% url 'mainapp:camera_view' %}'">
+                                    <span>📷</span><span>실시간 촬영</span></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4">
+                        <div class="card">
+                            <a class="img-card">
+                                <img src="/static/image/aaaaa.jpg"/>
+                            </a>
+                            <div class="card-content">
+                                <h4 class="card-title text-center">
+                                    <a>
+                                        헤어스타일 추천
+                                    </a>
+                                </h4>
+                                <p class="">
+                                    내용
+                                </p>
+                            </div>
+                            <div class="card-read-more">
+                                <div class="card-read-more">
+                                <button class="custom-btn btn-12" type="button"
+                                        onclick="window.location.href='{% url 'mainapp:camera_view' %}'">
+                                    <span>📷</span><span>실시간 촬영</span></button>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4">
+                        <div class="card">
+                            <a class="img-card">
+                                <img src="/static/image/aaaaa.jpg"/>
+                            </a>
+                            <div class="card-content">
+                                <h4 class="card-title text-center">
+                                    <a>탈모진단
+                                    </a>
+                                </h4>
+                                <p class="">
+                                    내용
+                                </p>
+                            </div>
+                            <div class="card-read-more">
+                                <div class="card-read-more">
+                                <button class="custom-btn btn-12" type="button"
+                                        onclick="window.location.href='{% url 'mainapp:camera_view' %}'">
+                                    <span>📷</span><span>실시간 촬영</span></button>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<br/><br/><br/><br/><br/><br/><br/>
+<!--
+<button class="custom-btn btn-9">버튼</button>
+<button class="custom-btn btn-12"><span>Click!</span><span>버튼2</span></button>
+-->
+
+{% include "footer.html" %}
+
+</body>
+
+</html>

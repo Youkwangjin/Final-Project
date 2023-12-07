@@ -1,0 +1,330 @@
+/* styles.css */
+.footer-container {
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+
+/*-----------메인--------------*/
+#bg {
+    background-image: linear-gradient(to right, #fff0f3 0%, #ff758f 100%);
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transition: all 2s ease-out;
+    z-index: -1;
+}
+
+h1 {
+    position: relative;
+    text-align: center;
+    color: #353535;
+    font-size: 50px;
+}
+
+p {
+    font-weight: 300;
+    text-align: center;
+    font-size: 18px;
+    color: #0e0000;
+}
+
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+@media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+    }
+}
+
+
+/*-----------로고--------------*/
+.logogo {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/*-----------sns 아이콘--------------*/
+.parent-icon {
+    text-align: center;
+    position: fixed;
+    bottom: 770px;
+    left: 95%;
+}
+
+.link-icon img {
+    width: 100%;
+    height: auto;
+}
+
+/*-----------버튼--------------*/
+button {
+    margin: 20px;
+}
+
+.custom-btn {
+    width: 130px;
+    height: 40px;
+    color: #fff;
+    border-radius: 5px;
+    padding: 10px 25px;
+    font-weight: 500;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+    box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, .5),
+    7px 7px 20px 0px rgba(0, 0, 0, .1),
+    4px 4px 5px 0px rgba(0, 0, 0, .1);
+    outline: none;
+}
+
+/* 버튼1 */
+.btn-9 {
+    border: none;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.btn-9:after {
+    position: absolute;
+    content: " ";
+    z-index: -1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1fd1f9;
+    background-image: linear-gradient(315deg, #ba2121 0%, #b621fe 74%);
+    transition: all 0.3s ease;
+}
+
+.btn-9:hover {
+    background: transparent;
+    box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, .5),
+    -4px -4px 6px 0 rgba(116, 125, 136, .2),
+    inset -4px -4px 6px 0 rgba(255, 255, 255, .5),
+    inset 4px 4px 6px 0 rgba(116, 125, 136, .3);
+    color: #fff;
+}
+
+.btn-9:hover:after {
+    -webkit-transform: scale(2) rotate(180deg);
+    transform: scale(2) rotate(180deg);
+    box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, .5),
+    -4px -4px 6px 0 rgba(116, 125, 136, .2),
+    inset -4px -4px 6px 0 rgba(255, 255, 255, .5),
+    inset 4px 4px 6px 0 rgba(116, 125, 136, .3);
+}
+
+/* 버튼2 */
+.btn-12 {
+    position: relative;
+    right: 30px;
+    bottom: 20px;
+    border: none;
+    box-shadow: none;
+    width: 130px;
+    height: 40px;
+    line-height: 42px;
+    -webkit-perspective: 100px;
+    perspective: 230px;
+}
+
+.btn-12 span {
+    background: rgb(0, 172, 238);
+    background: linear-gradient(0deg, rgba(0, 172, 238, 1) 0%, rgba(2, 126, 251, 1) 100%);
+    display: block;
+    position: absolute;
+    width: 130px;
+    height: 40px;
+    box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, .5),
+    7px 7px 20px 0px rgba(0, 0, 0, .1),
+    4px 4px 5px 0px rgba(0, 0, 0, .1);
+    border-radius: 5px;
+    margin: 0;
+    text-align: center;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-transition: all .3s;
+    transition: all .3s;
+}
+
+.btn-12 span:nth-child(1) {
+    box-shadow: -7px -7px 20px 0px #fff9,
+    -4px -4px 5px 0px #fff9,
+    7px 7px 20px 0px #0002,
+    4px 4px 5px 0px #0001;
+    -webkit-transform: rotateX(90deg);
+    -moz-transform: rotateX(90deg);
+    transform: rotateX(90deg);
+    -webkit-transform-origin: 50% 50% -20px;
+    -moz-transform-origin: 50% 50% -20px;
+    transform-origin: 50% 50% -20px;
+}
+
+.btn-12 span:nth-child(2) {
+    -webkit-transform: rotateX(0deg);
+    -moz-transform: rotateX(0deg);
+    transform: rotateX(0deg);
+    -webkit-transform-origin: 50% 50% -20px;
+    -moz-transform-origin: 50% 50% -20px;
+    transform-origin: 50% 50% -20px;
+}
+
+.btn-12:hover span:nth-child(1) {
+    box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, .5),
+    7px 7px 20px 0px rgba(0, 0, 0, .1),
+    4px 4px 5px 0px rgba(0, 0, 0, .1);
+    -webkit-transform: rotateX(0deg);
+    -moz-transform: rotateX(0deg);
+    transform: rotateX(0deg);
+}
+
+.btn-12:hover span:nth-child(2) {
+    box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, .5),
+    7px 7px 20px 0px rgba(0, 0, 0, .1),
+    4px 4px 5px 0px rgba(0, 0, 0, .1);
+    color: transparent;
+    -webkit-transform: rotateX(-90deg);
+    -moz-transform: rotateX(-90deg);
+    transform: rotateX(-90deg);
+}
+
+/*-----------카드--------------*/
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,100,900);
+
+body {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+    background: #FFF;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+}
+
+.wrapper {
+    display: table;
+    height: 100%;
+    width: 100%;
+}
+
+.container-fostrap {
+    display: table-cell;
+    padding: 1em;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.fostrap-logo {
+    width: 100px;
+    margin-bottom: 15px
+}
+
+h1.heading {
+    color: #fff;
+    font-size: 1.15em;
+    font-weight: 900;
+    margin: 0 0 0.5em;
+    color: #505050;
+}
+
+@media (min-width: 450px) {
+    h1.heading {
+        font-size: 3.55em;
+    }
+}
+
+@media (min-width: 760px) {
+    h1.heading {
+        font-size: 3.05em;
+    }
+}
+
+@media (min-width: 900px) {
+    h1.heading {
+        font-size: 3.25em;
+        margin: 0 0 0.3em;
+    }
+}
+
+.card {
+    display: block;
+    margin-bottom: 20px;
+    line-height: 1.42857143;
+    background-color: #fff;
+    border-radius: 2px;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    transition: box-shadow .25s;
+}
+
+.card:hover {
+    box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.img-card {
+    width: 100%;
+    height: 200px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    display: block;
+    overflow: hidden;
+}
+
+.img-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: all .25s ease;
+}
+
+.card-content {
+    padding: 15px;
+    text-align: left;
+}
+
+.card-title {
+    margin-top: 0px;
+    font-weight: 700;
+    font-size: 1.65em;
+}
+
+.card-title a {
+    color: #000;
+    text-decoration: none !important;
+}
+
+.card-read-more {
+    border-top: 1px solid #D4D4D4;
+}
+
+.card-read-more a {
+    text-decoration: none !important;
+    padding: 10px;
+    font-weight: 600;
+    text-transform: uppercase
+}
+
+.custom-btn span:first-child {
+    font-size: 25px; /* 이모지 크기 조절 */
+}
+
+
+
