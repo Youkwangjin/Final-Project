@@ -4,6 +4,15 @@ from django.shortcuts import render
 def main(request):
     return render(request, 'index.html')
 
-def camera_view(request):
+def personalcolor_view(request):
     # Your view logic goes here
-    return render(request, 'camera_view.html')
+    return render(request, 'personalcolor.html')
+
+def style_view(request):
+    # Your view logic goes here
+    return render(request, 'style.html')
+
+def hairloss_view(request):
+    # Your view logic goes here
+    return render(request, 'hairloss.html')
+
