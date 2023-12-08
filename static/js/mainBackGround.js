@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
         col1 = mouseX - blendAmount;
         col2 = mouseX + blendAmount;
 
-        bg.style.background = "linear-gradient(to right, #fff0f3 " + col1 + "%, #ff758f " + col2 + "%)";
+        bg.style.background = "linear-gradient(to right, #ffdab9 " + col1 + "%, #ffadad " + col2 + "%)";
 
     }
 });
