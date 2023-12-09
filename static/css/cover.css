@@ -99,6 +99,7 @@ button {
     border: none;
     transition: all 0.3s ease;
     overflow: hidden;
+    padding: 0px;
 }
 
 .btn-9:after {
@@ -326,5 +327,14 @@ h1.heading {
     font-size: 25px; /* 이모지 크기 조절 */
 }
 
+/*-----------사진 결과--------------*/
+#hair-recommendation {
 
+}
 
+#captured-photo {
+ position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
