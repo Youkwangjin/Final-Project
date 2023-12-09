@@ -31,6 +31,11 @@
 
 # 프로젝트 문서
 
+# 시스템 구성도
+
+![image](https://github.com/Youkwangjin/Final-Project/assets/117841714/08622152-5308-4c8d-9720-c80011aa3131)
+
+
 # 데이터 분석 과정
 
 # 웹 개발 과정
