@@ -2,8 +2,8 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 1040px; /* 외곽선 */
-    height: 800px; /* 외관선 */
+    width: 800px; /* 외곽선 */
+    height: 600px; /* 외관선 */
     border: 20px #666 solid;
     display: flex;
     justify-content: center; /* 수평 중앙 정렬 */
@@ -12,7 +12,7 @@
 }
 
 #videoElement {
-    width: 1000px;
-    height: 800px;
+    width: 900px;
+    height: 700px;
     background-color: #666;
 }
