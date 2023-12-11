@@ -4,23 +4,22 @@
 {% include "head.html" %}
 {% include "header.html" %}
 
-<body>
-<div id="bg" class="py-5 text-center">
-    <div class="col-lg-6 col-md-8 mx-auto">
-    </div>
-</div>
-<div id="camera-container" class="text-center">
-    <video id="video" width="1080" height="720" autoplay="true"></video>
-</div>
-<div class="text-center mt-5;">
-    <button class="custom-btn btn-12" type="button" id="capture"
-            onclick="window.location.href='{% url "mainapp:personalcolorresult_view" %}'"
-    ><span>찰칵</span><span>사진찍기</span>
-    </button>
-</div>
-<canvas id="canvas" width="1080" height="720" ></canvas>
-<img id="photo" alt="찍은 사진" hidden=""/>
+<body class="sub-background">
+        <section>
+            <div id="camera-container" class="text-center">
+                <video id="video" width="1080" height="720" autoplay="true"></video>
+            </div>
+        </section>
+        <canvas id="canvas" width="1080" height="720"></canvas>
+        <img id="photo" alt="찍은 사진" hidden=""/>
+
+        <div class="text-center">
+            <button class="custom-btn btn-12" type="button" id="capture"
+                    onclick="window.location.href='{% url "mainapp:personalcolorresult_view" %}'"
+            ><span>찰칵</span><span>사진찍기</span>
+            </button>
+        </div>
+    {% include "footer.html" %}
 <script src="/static/js/camera.js"></script>
-{% include "footer.html" %}
 </body>
 </html>
