@@ -28,4 +28,3 @@ def personalcolorresult_view(request):
 def styleresult_view(request):
     # Your view logic goes here
     return render(request, 'styleresult.html')
-

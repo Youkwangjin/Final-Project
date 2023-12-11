@@ -1,19 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" data-bs-theme="auto">
 
 {% include "head.html" %}
 {% include "header.html" %}
 
-<body>
-<div id="bg" class="py-5 text-center">
-    <div class="col-lg-6 col-md-8 mx-auto">
-    </div>
-</div>
+<body class="sub-background">
+        <section>
 <div id="hair-recommendation" class="text-center">
     <!-- 찍은 사진을 표시할 이미지 엘리먼트 -->
     <img id="captured-photo" alt="찍은 사진" src=""/>
 </div>
-{% include "footer.html" %}
+</section>
+        <canvas id="canvas" width="1080" height="720"></canvas>
+    {% include "footer.html" %}
 <script>
     // 로컬 스토리지에서 찍은 사진 데이터를 가져옴
     let capturedPhotoData = localStorage.getItem('capturedPhoto');
@@ -26,3 +25,7 @@
 </script>
 </body>
 </html>
+
+
+
+
