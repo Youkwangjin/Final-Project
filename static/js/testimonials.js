@@ -26,10 +26,10 @@ testimonials.slider = (function(){
     if($(nextBtn).hasClass('grey-out')){
       $(nextBtn).removeClass('grey-out');
     }
-    if(currentItemIndex === 0){
+    if(currentItemIndex == 0){
       $(prevBtn).addClass('grey-out');
     }
-    if(currentItemIndex === items.length -1){
+    if(currentItemIndex == items.length -1){
       $(nextBtn).addClass('grey-out');
     }
   }
