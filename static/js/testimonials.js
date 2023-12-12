@@ -11,14 +11,14 @@ testimonials.slider = (function(){
         });
         return items;
       })();
-  
+
   function getCurrent(){
     $('.testimonial').each(function(index){
       $(this).removeClass('current');
     });
     $('.testimonial').eq(currentItemIndex).addClass('current');
   }
-  
+
   function greyOut(prevBtn, nextBtn){
     if($(prevBtn).hasClass('grey-out')){
       $(prevBtn).removeClass('grey-out');
@@ -54,7 +54,7 @@ testimonials.slider = (function(){
       });
     }
   };
-  
+
 })();
 
 testimonials.slider.init('.prev-testimonial', '.next-testimonial');
