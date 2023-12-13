@@ -19,6 +19,21 @@
             ><span>찰칵</span><span>사진찍기</span>
             </button>
         </div>
+        <script>
+            // 실시간 웹 캠으로 찍은 사진을 db와 연동하기위해 Ajax 사용
+            document.getElementById('capture').addEventListener('click', function() {
+                let canvas = document.getElementById('canvas');
+                let video = document.getElementById('video');
+                canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+                let imageData = canvas.toDataURL('image/png');
+
+                // AJAX 요청으로 이미지 데이터를 서버로 전송
+                let xhr = new XMLHttpRequest();
+                xhr.open('POST', '/upload_image/', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify({ image_data: imageData }));
+            });
+        </script>
     {% include "footer.html" %}
 <script src="/static/js/camera.js"></script>
 </body>
