@@ -23,5 +23,4 @@ document.getElementById('capture').addEventListener('click', function () {
 
     // 찍은 사진을 로컬 스토리지에 저장
     localStorage.setItem('capturedPhoto', photo.src);
-
 });
