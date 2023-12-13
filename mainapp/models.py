@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 class Facerecorn(models.Model):
-    facerecorn_id = models.IntegerField(primary_key=True)
+    facerecorn_id = models.AutoField(primary_key=True)
     faceshape_id = models.IntegerField()
     hair_imgpath = models.CharField(max_length=255)
     hair_name = models.CharField(max_length=20)
@@ -37,7 +37,7 @@ class Personal(models.Model):
 
 
 class Personalrecorn(models.Model):
-    personalrecorn_id = models.IntegerField(primary_key=True)
+    personalrecorn_id = models.AutoField(primary_key=True)
     personal_id = models.IntegerField()
     cosmetics = models.CharField(max_length=10)
     dyecolor = models.CharField(max_length=20)
@@ -59,7 +59,7 @@ class Scalp(models.Model):
 
 
 class Scalprecorn(models.Model):
-    scalprecorn_id = models.IntegerField(primary_key=True)
+    scalprecorn_id = models.AutoField(primary_key=True)
     scalp_id = models.IntegerField()
     scalprecorn_imgpath = models.CharField(max_length=255)
     scalprecorn_name = models.CharField(max_length=20)
