@@ -17,7 +17,7 @@ class Facerecorn(models.Model):
 class Faceshape(models.Model):
     faceshape_id = models.AutoField(primary_key=True)  # 자동으로 증가하는 ID
     faceshape_result = models.CharField(max_length=20)
-    faceshape_image = models.ImageField(upload_to='faceshapes/')  # 이미지 파일 저장
+    faceshape_imgpath = models.ImageField(upload_to='faceshapes/')  # 이미지 파일 저장
     faceshape_dt = models.DateTimeField(auto_now_add=True)  # 자동으로 현재 시간 저장
 
     class Meta:
@@ -50,7 +50,7 @@ class Personalrecorn(models.Model):
 class Scalp(models.Model):
     scalp_id = models.AutoField(primary_key=True)  # AutoField를 사용하여 자동 ID 할당
     scalp_result = models.CharField(max_length=20)
-    scalp_image = models.ImageField(upload_to='scalp/')  # ImageField로 변경
+    scalp_imgpath = models.ImageField(upload_to='scalp/')  # ImageField로 변경
     scalp_dt = models.DateTimeField(auto_now_add=True)  # 레코드 생성 시 현재 시간 자동 저장
 
     class Meta:
