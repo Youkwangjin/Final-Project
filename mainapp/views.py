@@ -7,24 +7,30 @@ from .models import Personal, Faceshape, Scalp
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 
+
 def main(request):
     return render(request, 'index.html')
+
 
 def personalcolor_view(request):
     # Your view logic goes here
     return render(request, 'personalcolor.html')
 
+
 def style_view(request):
     # Your view logic goes here
     return render(request, 'style.html')
+
 
 def hairloss_view(request):
     # Your view logic goes here
     return render(request, 'hairloss.html')
 
+
 def hairlossresult_view(request):
     # Your view logic goes here
     return render(request, 'hairlossresult.html')
+
 
 def personalcolorresult_view(request):
     # Your view logic goes here
@@ -32,9 +38,11 @@ def personalcolorresult_view(request):
     # 원 function으로... 분류결과를 db에 넣어야함.
     return render(request, 'personalcolorresult.html')
 
+
 def styleresult_view(request):
     # Your view logic goes here
     return render(request, 'styleresult.html')
+
 
 @csrf_exempt
 def upload_personal_image(request):
@@ -61,6 +69,7 @@ def upload_personal_image(request):
         return JsonResponse({'status': 'success', 'personal_id': new_personal.personal_id})
     return JsonResponse({'status': 'fail'})
 
+
 @csrf_exempt
 def upload_faceshape_image(request):
     if request.method == 'POST':
@@ -85,27 +94,27 @@ def upload_faceshape_image(request):
         return JsonResponse({'status': 'success', 'faceshape_id': new_faceshape.faceshape_id})
     return JsonResponse({'status': 'fail'})
 
+
 @csrf_exempt
 def upload_scalp_image(request):
     if request.method == 'POST':
-        # JSON 데이터 로딩
-        data = json.loads(request.body)
-        image_data = data['image_data']
-        format, imgstr = image_data.split(';base64,')  # 이미지 포맷과 데이터 분리
-        ext = format.split('/')[-1]  # 파일 확장자 추출
+        if 'photo' in request.FILES:
+            photo = request.FILES['photo']
 
-        # 이미지 데이터를 ContentFile로 변환
-        image_file = ContentFile(base64.b64decode(imgstr), name='faceshape.' + ext)
+            # 이미지 파일 처리
+            # 파일 확장자를 추출합니다 (예: 'jpg', 'png' 등)
+            ext = photo.name.split('.')[-1]
 
-        # Faceshape 모델 인스턴스 생성 및 저장
-        new_scalp = Scalp(
-            scalp_result=data.get('scalp_result', ''),  # 결과, 없다면 빈 문자열
-            scalp_imgpath=image_file,  # 이미지 파일
-            scalp_dt=timezone.now(),  # 등록일자, 현재 시간으로 설정
-            # 기타 필요한 필드들을 추가
-        )
-        new_scalp.save()
+            # Faceshape 모델 인스턴스 생성 및 저장
+            new_scalp = Scalp(
+                scalp_imgpath=photo,  # 업로드된 이미지 파일
+                scalp_dt=timezone.now(),  # 등록일자, 현재 시간으로 설정
+                # 기타 필요한 필드들을 추가
+            )
+            new_scalp.save()
 
-        return JsonResponse({'status': 'success', 'faceshape_id': new_scalp.scalp_id})
-    return JsonResponse({'status': 'fail'})
+            return JsonResponse({'status': 'success', 'scalp_id': new_scalp.scalp_id})
+        else:
+            return JsonResponse({'status': 'fail', 'message': 'No photo uploaded'})
 
+    return JsonResponse({'status': 'fail', 'message': 'Invalid request method'})

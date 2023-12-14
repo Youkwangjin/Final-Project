@@ -1,54 +1,49 @@
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
-
 {% include "head.html" %}
 {% include "header.html" %}
 
-<body class="sub-background3">
-        <section>
-            <div id="camera-container" class="text-center">
-                <video id="video" width="1080" height="720" autoplay="true"></video>
-            </div>
-        </section>
-        <canvas id="canvas" width="1080" height="720"></canvas>
-        <img id="photo" alt="찍은 사진" hidden=""/>
-
-        <div class="text-center">
-            <button class="custom-btn btn-12" type="button" id="capture"
-                    onclick="window.location.href='{% url "mainapp:hairlossresult_view" %}'"
-            ><span>찰칵</span><span>사진찍기</span>
-            </button>
+<body class="sub-background">
+    <section>
+        <div id="photo-upload-container" class="text-center">
+            <form id="upload-form" enctype="multipart/form-data">
+                <input type="file" id="photo-input" name="photo" accept="image/*" required>
+                <button type="submit" class="custom-btn btn-12"><span>업로드</span><span>업로드</span></button>
+            </form>
+            <img id="uploaded-photo" alt="업로드된 사진" hidden/>
         </div>
-        <script>
-            // 실시간 웹 캠으로 찍은 사진을 데이터베이스와 연동하기 위해 Ajax 사용
-            document.getElementById('capture').addEventListener('click', function() {
-                let canvas = document.getElementById('canvas');
-                let video = document.getElementById('video');
-                canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-                let imageData = canvas.toDataURL('image/png');
+    </section>
 
-                // AJAX 요청으로 이미지 데이터를 서버로 전송
-                let xhr = new XMLHttpRequest();
-                xhr.open('POST', '/upload_scalp_image/', true);
-                xhr.setRequestHeader('Content-Type', 'application/json');
-                xhr.send(JSON.stringify({ image_data: imageData }));
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    let file = document.getElementById('photo-input').files[0];
 
-                // 요청이 성공적으로 완료되었을 때 실행될 때
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        console.log('Image upload successful:', xhr.responseText);
-                        // 추가로, 사용자에게 성공 메시지를 보여주거나 새로운 페이지로 리다이렉션할 수 있다.
-                    } else {
-                        console.error('Image upload failed:', xhr.statusText);
-                    }
-                };
-                // 요청이 실패했을 때
-                xhr.onerror = function() {
-                    console.error('Request error');
-                };
-            });
-        </script>
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = function() {
+        let base64String = reader.result;
+        localStorage.setItem('uploadedPhoto', base64String);
+
+        // 서버에 이미지 전송
+        let formData = new FormData();
+        formData.append('photo', file);
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '/upload_scalp_image/', true);
+        xhr.send(formData);
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                console.log('Photo upload successful:', xhr.responseText);
+                window.location.href = '{% url "mainapp:hairlossresult_view" %}'; // 페이지 이동
+            } else {
+                console.error('Photo upload failed:', xhr.statusText);
+            }
+        };
+    };
+});
+    </script>
+
     {% include "footer.html" %}
-<script src="/static/js/camera.js"></script>
 </body>
 </html>
