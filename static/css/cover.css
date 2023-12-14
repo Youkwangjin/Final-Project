@@ -261,6 +261,21 @@ button {
   transition: all 0.3s ease;
 }
 
+/*-----------버튼안에 svg그림위치--------------*/
+.personal-image {
+    float: left; /* 이미지를 왼쪽으로 정렬 */
+    margin-right: 5px; /* 오른쪽에 여백 추가 */
+}
+.style-image {
+    float: left; /* 이미지를 왼쪽으로 정렬 */
+    margin-right: 13px; /* 오른쪽에 여백 추가 */
+}
+
+.hair-image {
+    float: left; /* 이미지를 왼쪽으로 정렬 */
+    margin-right: 15px; /* 오른쪽에 여백 추가 */
+}
+
 /*-----------사진 결과--------------*/
 #hair-recommendation {
 
