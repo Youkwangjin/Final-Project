@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+
+{% include "head.html" %}
+{% include "header.html" %}
+
+<body class="sub-background">
+<section>
+    <div id="hair-recommendation" class="text-center">
+        <!-- 찍은 사진을 표시할 이미지 엘리먼트 -->
+        <img id="captured-photo" alt="찍은 사진" src="" style="width: 300px; height: auto;"/>
+    </div>
+</section>
+
+<canvas id="canvas" width="900" height="600"></canvas>
+{% include "footer.html" %}
+<script>
+    // 로컬 스토리지에서 찍은 사진 데이터를 가져옴
+    let capturedPhotoData = localStorage.getItem('capturedPhoto');
+
+    // 찍은 사진이 있는지 확인
+    if (capturedPhotoData) {
+        // 이미지 엘리먼트의 소스로 찍은 사진을 설정
+        document.getElementById('captured-photo').src = capturedPhotoData;
+    }
+</script>
+</body>
+</html>

@@ -1,110 +1,152 @@
-<!doctype html>
-<html lang="en" data-bs-theme="auto">
-
+<!DOCTYPE html>
+<html lang="en">
 {% include "head.html" %}
 {% include "header.html" %}
-<body>
-<div id="bg" class="py-5 text-center">
-    <div class="col-lg-6 col-md-8 mx-auto">
-    </div>
-</div>
-<br/><br/><br/><br/>
-<section class="wrapper">
-    <div class="container-fostrap">
-        <div>
-            <h1 class="heading">
-                MAKE ME UP! ggg
-            </h1>
-            <h4>당신에게 맞는 샬라샬라샤랄a</h4>
-            <h3>ㅣㅣㅣ</h3>
-            <br/><br/><br/>
+<body class="frontpage">
+<div class="container">
+    <section class="background">
+        <div class="content-wrapper">
+            <div class="intro">
+                <h1><span class="smaller wow zoomIn" data-wow-duration="2s" data-wow-delay="0.5">5th floor, Samwon Tower, 124 Teheran-ro, Gangnam-gu, Seoul</span>
+                    <span class="big wow pulse" data-wow-duration="1s" data-wow-delay="0s">Find myself</span><br/>
+                    <span class="small wow fadeIn" data-wow-duration="2s" data-wow-delay="0.5s">- MAKE ME UP! -</span>
+                </h1>
+            </div>
         </div>
-        <div class="content">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-4">
-                        <div class="card">
-                            <a class="img-card">
-                                <img src="/static/image/aaaaa.jpg"/>
-                            </a>
-                            <div class="card-content">
-                                <h4 class="card-title text-center">
-                                    <a> 퍼스널 컬러 진단
-                                    </a>
-                                </h4>
-                                <p class="">
-                                    내용
-                                </p>
-                            </div>
-                            <div class="card-read-more">
-                                <button class="custom-btn btn-12" type="button"
-                                        onclick="window.location.href='{% url 'mainapp:camera_view' %}'">
-                                    <span>📷</span><span>실시간 촬영</span></button>
-                            </div>
+    </section>
+    <section class="background">
+        <div class="content-wrapper">
+            <div class="card-container">
+                <!--card1-->
+                <div class="card" onclick="window.location.href='{% url 'mainapp:personalcolor_view' %}'" >
+                    <div class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="38px"
+                             width="38px" version="1.1" id="heart" viewBox="0 0 471.701 471.701" xml:space="preserve">
+      <linearGradient id="gradientColor">
+        <stop offset="5%" stop-color="#7eaaff"></stop>
+          <stop offset="95%" stop-color="#ff48fb"></stop>
+      </linearGradient>
+                            <g>
+        <path d="M433.601,67.001c-24.7-24.7-57.4-38.2-92.3-38.2s-67.7,13.6-92.4,38.3l-12.9,12.9l-13.1-13.1   c-24.7-24.7-57.6-38.4-92.5-38.4c-34.8,0-67.6,13.6-92.2,38.2c-24.7,24.7-38.3,57.5-38.2,92.4c0,34.9,13.7,67.6,38.4,92.3   l187.8,187.8c2.6,2.6,6.1,4,9.5,4c3.4,0,6.9-1.3,9.5-3.9l188.2-187.5c24.7-24.7,38.3-57.5,38.3-92.4   C471.801,124.501,458.301,91.701,433.601,67.001z M414.401,232.701l-178.7,178l-178.3-178.3c-19.6-19.6-30.4-45.6-30.4-73.3   s10.7-53.7,30.3-73.2c19.5-19.5,45.5-30.3,73.1-30.3c27.7,0,53.8,10.8,73.4,30.4l22.6,22.6c5.3,5.3,13.8,5.3,19.1,0l22.4-22.4   c19.6-19.6,45.7-30.4,73.3-30.4c27.6,0,53.6,10.8,73.2,30.3c19.6,19.6,30.3,45.6,30.3,73.3   C444.801,187.101,434.001,213.101,414.401,232.701z"></path>
+      </g>
+    </svg>
+                    </div>
+                    <p class="title">퍼스널 컬러</p>
+                    <p class="text">나에게 맞는 색을 찾아 보세요.</p>
+                </div> <!--card1-->
+                <!--card2-->
+                <div class="card" onclick="window.location.href='{% url 'mainapp:style_view' %}'" >
+                    <div class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="38px"
+                             width="38px" version="1.1" id="heart" viewBox="0 0 471.701 471.701" xml:space="preserve">
+      <linearGradient id="gradientColor">
+        <stop offset="5%" stop-color="#7eaaff"></stop>
+          <stop offset="95%" stop-color="#ff48fb"></stop>
+      </linearGradient>
+                            <g>
+        <path d="M433.601,67.001c-24.7-24.7-57.4-38.2-92.3-38.2s-67.7,13.6-92.4,38.3l-12.9,12.9l-13.1-13.1   c-24.7-24.7-57.6-38.4-92.5-38.4c-34.8,0-67.6,13.6-92.2,38.2c-24.7,24.7-38.3,57.5-38.2,92.4c0,34.9,13.7,67.6,38.4,92.3   l187.8,187.8c2.6,2.6,6.1,4,9.5,4c3.4,0,6.9-1.3,9.5-3.9l188.2-187.5c24.7-24.7,38.3-57.5,38.3-92.4   C471.801,124.501,458.301,91.701,433.601,67.001z M414.401,232.701l-178.7,178l-178.3-178.3c-19.6-19.6-30.4-45.6-30.4-73.3   s10.7-53.7,30.3-73.2c19.5-19.5,45.5-30.3,73.1-30.3c27.7,0,53.8,10.8,73.4,30.4l22.6,22.6c5.3,5.3,13.8,5.3,19.1,0l22.4-22.4   c19.6-19.6,45.7-30.4,73.3-30.4c27.6,0,53.6,10.8,73.2,30.3c19.6,19.6,30.3,45.6,30.3,73.3   C444.801,187.101,434.001,213.101,414.401,232.701z"></path>
+      </g>
+    </svg>
+                    </div>
+                    <p class="title">헤어스타일 추천</p>
+                    <p class="text">얼굴형에 맞는 헤어스타일을 추천 해드립니다.</p>
+                </div> <!--card2-->
+                <!--card3-->
+                <div class="card" onclick="window.location.href='{% url 'mainapp:hairloss_view' %}'" >
+                    <div class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="38px"
+                             width="38px" version="1.1" id="heart" viewBox="0 0 471.701 471.701" xml:space="preserve">
+      <linearGradient id="gradientColor">
+        <stop offset="5%" stop-color="#7eaaff"></stop>
+          <stop offset="95%" stop-color="#ff48fb"></stop>
+      </linearGradient>
+                            <g>
+        <path d="M433.601,67.001c-24.7-24.7-57.4-38.2-92.3-38.2s-67.7,13.6-92.4,38.3l-12.9,12.9l-13.1-13.1   c-24.7-24.7-57.6-38.4-92.5-38.4c-34.8,0-67.6,13.6-92.2,38.2c-24.7,24.7-38.3,57.5-38.2,92.4c0,34.9,13.7,67.6,38.4,92.3   l187.8,187.8c2.6,2.6,6.1,4,9.5,4c3.4,0,6.9-1.3,9.5-3.9l188.2-187.5c24.7-24.7,38.3-57.5,38.3-92.4   C471.801,124.501,458.301,91.701,433.601,67.001z M414.401,232.701l-178.7,178l-178.3-178.3c-19.6-19.6-30.4-45.6-30.4-73.3   s10.7-53.7,30.3-73.2c19.5-19.5,45.5-30.3,73.1-30.3c27.7,0,53.8,10.8,73.4,30.4l22.6,22.6c5.3,5.3,13.8,5.3,19.1,0l22.4-22.4   c19.6-19.6,45.7-30.4,73.3-30.4c27.6,0,53.6,10.8,73.2,30.3c19.6,19.6,30.3,45.6,30.3,73.3   C444.801,187.101,434.001,213.101,414.401,232.701z"></path>
+      </g>
+    </svg>
+                    </div>
+                    <p class="title">두피 검사</p>
+                    <p class="text">두피 검사를 진행해 보세요</p>
+                </div> <!--card3-->
+            </div>
+        </div>
+        </section>
+</div>
+
+
+{% include "footer.html" %}
+</body>
+</html>
+
+<!--
+                <div class="col-xs-12 col-sm-4">
+                    <div class="card">
+                        <a class="img-card">
+                            <img src="/static/image/pursonal.png"/>
+                        </a>
+                        <div class="card-content">
+                            <h4 class="card-title text-center">
+                                <a> 퍼스널 컬러 진단
+                                </a>
+                            </h4>
+                            <p class="">
+                                퍼스널컬러 진단을 통해<br/>
+                                어울리는 색감을 찾아 보세요
+                            </p>
+                        </div>
+                        <div class="card-read-more">
+                            <button class="custom-btn btn-12" type="button"
+                                    onclick="window.location.href='{% url 'mainapp:personalcolor_view' %}'">
+                                <span>📷</span><span>실시간 촬영</span></button>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-4">
-                        <div class="card">
-                            <a class="img-card">
-                                <img src="/static/image/aaaaa.jpg"/>
-                            </a>
-                            <div class="card-content">
-                                <h4 class="card-title text-center">
-                                    <a>
-                                        헤어스타일 추천
-                                    </a>
-                                </h4>
-                                <p class="">
-                                    내용
-                                </p>
-                            </div>
-                            <div class="card-read-more">
-                                <div class="card-read-more">
-                                <button class="custom-btn btn-12" type="button"
-                                        onclick="window.location.href='{% url 'mainapp:camera_view' %}'">
-                                    <span>📷</span><span>실시간 촬영</span></button>
-                            </div>
-                            </div>
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <div class="card">
+                        <a class="img-card">
+                            <img src="/static/image/hairstyle.png"/>
+                        </a>
+                        <div class="card-content">
+                            <h4 class="card-title text-center">
+                                <a>
+                                    헤어스타일 추천
+                                </a>
+                            </h4>
+                            <p class="">
+                                얼굴형에 맞는<br/>
+                                헤어스타일을 추천해드립니다.
+                            </p>
                         </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-4">
-                        <div class="card">
-                            <a class="img-card">
-                                <img src="/static/image/aaaaa.jpg"/>
-                            </a>
-                            <div class="card-content">
-                                <h4 class="card-title text-center">
-                                    <a>탈모진단
-                                    </a>
-                                </h4>
-                                <p class="">
-                                    내용
-                                </p>
-                            </div>
+                        <div class="card-read-more">
                             <div class="card-read-more">
-                                <div class="card-read-more">
                                 <button class="custom-btn btn-12" type="button"
-                                        onclick="window.location.href='{% url 'mainapp:camera_view' %}'">
+                                        onclick="window.location.href='{% url 'mainapp:style_view' %}'">
                                     <span>📷</span><span>실시간 촬영</span></button>
-                            </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-
-<br/><br/><br/><br/><br/><br/><br/>
-<!--
-<button class="custom-btn btn-9">버튼</button>
-<button class="custom-btn btn-12"><span>Click!</span><span>버튼2</span></button>
--->
-
-{% include "footer.html" %}
-
-</body>
-
-</html>
+                <div class="col-xs-12 col-sm-4">
+                    <div class="card">
+                        <a class="img-card">
+                            <img src="/static/image/hairloss.png"/>
+                        </a>
+                        <div class="card-content">
+                            <h4 class="card-title text-center">
+                                <a>두피진단
+                                </a>
+                            </h4>
+                            <p class="">
+                                현재 두피상태를<br/>
+                                점검 해보세요.
+                            </p>
+                        </div>
+                        <div class="card-read-more">
+                            <div class="card-read-more">
+                                <button class="custom-btn btn-12" type="button"
+                                        onclick="window.location.href='{% url 'mainapp:hairloss_view' %}'">
+                                    <span>📷</span><span>실시간 촬영</span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->

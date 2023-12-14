@@ -1,0 +1,18 @@
+#camera-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 800px; /* 외곽선 */
+    height: 600px; /* 외관선 */
+    border: 20px #666 solid;
+    display: flex;
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    transform: translate(-50%, -50%); /* 가운데 정렬을 위한 변형 */
+}
+
+#videoElement {
+    width: 900px;
+    height: 700px;
+    background01-color: #666;
+}
