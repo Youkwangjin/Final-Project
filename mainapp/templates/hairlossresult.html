@@ -1,27 +1,24 @@
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
-
 {% include "head.html" %}
 {% include "header.html" %}
 
 <body class="sub-background">
-        <section>
-<div id="hair-recommendation" class="text-center">
-    <!-- 찍은 사진을 표시할 이미지 엘리먼트 -->
-    <img id="captured-photo" alt="찍은 사진" src=""/>
-</div>
-</section>
-        <canvas id="canvas" width="1080" height="720"></canvas>
-    {% include "footer.html" %}
-<script>
-    // 로컬 스토리지에서 찍은 사진 데이터를 가져옴
-    let capturedPhotoData = localStorage.getItem('capturedPhoto');
+    <section>
+        <div id="hair-recommendation" class="text-center">
+            <img id="displayed-photo" alt="표시된 사진"/>
+        </div>
+    </section>
 
-    // 찍은 사진이 있는지 확인
-    if (capturedPhotoData) {
-        // 이미지 엘리먼트의 소스로 찍은 사진을 설정
-        document.getElementById('captured-photo').src = capturedPhotoData;
-    }
+    {% include "footer.html" %}
+    <script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+        let base64Image = localStorage.getItem('uploadedPhoto');
+        if (base64Image) {
+            document.getElementById('displayed-photo').src = base64Image;
+        }
+    });
 </script>
+
 </body>
 </html>
