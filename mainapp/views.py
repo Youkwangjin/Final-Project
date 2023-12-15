@@ -11,7 +11,7 @@ from tensorflow.keras.models import load_model
 from django.conf import settings
 import os
 # 모델을 불러옵니다. 이 경로는 실제 모델 파일의 위치를 반영해야 합니다.
-fmodel_path = os.path.join(settings.BASE_DIR,'C:/Users/SEOHO/Desktop/wdataset', 'shape_vgg16.h5')
+fmodel_path = os.path.join(settings.BASE_DIR,'C:/Users/Cho/PycharmProjects/Final-Project/mainapp/models', 'shape_vgg16.h5')
 fmodel = load_model(fmodel_path)
 
 def main(request):
@@ -142,7 +142,7 @@ import os
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import numpy as np
 
-# 여기에 classify_face_shape 함수를 정의해주세요 .
+# 여기에 classify_face_shape 함수를 정의해주세요~! .
 
 def styleresult_view(request):
     try:
@@ -188,5 +188,8 @@ def upload_scalp_image(request):
             )
             new_scalp.save()
 
-        return JsonResponse({'status': 'success', 'faceshape_id': new_scalp.scalp_id})
-    return JsonResponse({'status': 'fail'})
+            return JsonResponse({'status': 'success', 'scalp_id': new_scalp.scalp_id})
+        else:
+            return JsonResponse({'status': 'fail', 'message': 'No photo uploaded'})
+
+    return JsonResponse({'status': 'fail', 'message': 'Invalid request method'})
