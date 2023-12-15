@@ -11,7 +11,7 @@ from tensorflow.keras.models import load_model
 from django.conf import settings
 import os
 # 모델을 불러옵니다. 이 경로는 실제 모델 파일의 위치를 반영해야 합니다.
-fmodel_path = os.path.join(settings.BASE_DIR,'C:/Users/SEOHO/Desktop/wdataset', 'shape_vgg16.h5')
+fmodel_path = os.path.join(settings.BASE_DIR,'../Final-Project/mainapp/models', 'shape_vgg16.h5')
 fmodel = load_model(fmodel_path)
 
 def main(request):
@@ -110,7 +110,9 @@ def classify_face_shape(img_path):
     # 이미지를 분류하고 결과를 반환합니다.
     predictions = fmodel.predict(img_array)
     print('Predictions:', predictions)  # 변환된 이미지의 배열값을 확인
-    predictions_percent = predictions[0] * 100      # 각 클래스에 대한 예측 확률을 백분율로 변환합니다.
+    # 각 클래스에 대한 예측 확률을 백분율로 변환하고 정수로 변환합니다.
+    predictions_percent = [int(value * 100) for value in predictions[0]]
+    print('Predictions Percent as Integer:', predictions_percent)
 
     predicted_index = np.argmax(predictions, axis=1)
     print('predicted_index : ', predicted_index)
@@ -142,7 +144,7 @@ import os
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import numpy as np
 
-# 여기에 classify_face_shape 함수를 정의해주세요 .
+# 여기에 classify_face_shape 함수를 정의해주세요~! .
 
 def styleresult_view(request):
     try:
@@ -188,5 +190,8 @@ def upload_scalp_image(request):
             )
             new_scalp.save()
 
-        return JsonResponse({'status': 'success', 'faceshape_id': new_scalp.scalp_id})
-    return JsonResponse({'status': 'fail'})
+            return JsonResponse({'status': 'success', 'scalp_id': new_scalp.scalp_id})
+        else:
+            return JsonResponse({'status': 'fail', 'message': 'No photo uploaded'})
+
+    return JsonResponse({'status': 'fail', 'message': 'Invalid request method'})
