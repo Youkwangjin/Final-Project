@@ -1,4 +1,5 @@
 from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from django.shortcuts import render
 import json
 import base64
@@ -98,8 +99,6 @@ def upload_faceshape_image(request):
 
 
 
-
-
 # 이미지 로드 및 전처리(얼굴형)
 def classify_face_shape(img_path):
     img = load_img(img_path, target_size=(224, 224))  # 이미지 로드 및 크기 조정
@@ -107,8 +106,11 @@ def classify_face_shape(img_path):
     img_array = np.expand_dims(img_array, axis=0)  # 행 방향으로 차원 확대
     # 이미지를 분류하고 결과를 반환합니다.
     predictions = fmodel.predict(img_array)
+    predictions = fmodel.predict(img_array)
     print('Predictions:', predictions)  # 변환된 이미지의 배열값을 확인
-    predictions_percent = predictions[0] * 100      # 각 클래스에 대한 예측 확률을 백분율로 변환합니다.
+    # 각 클래스에 대한 예측 확률을 백분율로 변환하고 정수로 변환합니다.
+    predictions_percent = [int(value * 100) for value in predictions[0]]
+    print('Predictions Percent as Integer:', predictions_percent)
 
     predicted_index = np.argmax(predictions, axis=1)
     print('predicted_index : ', predicted_index)
