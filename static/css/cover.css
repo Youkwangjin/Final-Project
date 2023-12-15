@@ -283,7 +283,47 @@ button {
 
 #captured-photo {
  position: absolute;
-    top: 50%;
+    top: 20%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
+/*-----------업로드--------------*/
+/* Overall container */
+#photo-upload-container {
+    text-align: center;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 300px;
+}
+
+/* Styling for the form */
+#upload-form {
+    margin: auto;
+    padding: 20px;
+}
+
+/* Styling for the input field */
+#photo-input {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: block;
+    width: 80%;
+    margin: auto;
+}
+
+
+
+/* Styling for the uploaded photo */
+#uploaded-photo {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+/*그래프*/
+
