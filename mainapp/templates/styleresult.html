@@ -23,5 +23,25 @@
         document.getElementById('captured-photo').src = capturedPhotoData;
     }
 </script>
+       <!--
+ <h1>얼굴 형태 분류 결과</h1>
+    {% if face_shape %}
+        <p>분류된 얼굴 형태: {{ face_shape }}</p>
+    {% else %}
+        <p>얼굴 형태를 분류할 수 없습니다.</p>
+    {% endif %}
+    -->
+    <h1>얼굴 형태 분류 결과</h1>
+    <p>예측된 얼굴 형태: {{ face_shape }}</p>
+    <p>각 클래스에 대한 확률:</p>
+    <ul>
+        <li>하트형: {{ predictions_percent.0 }}%</li>
+        <li>직사각형: {{ predictions_percent.1 }}%</li>
+        <li>계란형: {{ predictions_percent.2 }}%</li>
+        <li>둥근형: {{ predictions_percent.3 }}%</li>
+        <li>사각형: {{ predictions_percent.4 }}%</li>
+    </ul>
+<input type="button" value="추천 보기" name="frecommend"> 
+
 </body>
 </html>
