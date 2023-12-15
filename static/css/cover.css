@@ -283,7 +283,7 @@ button {
 
 #captured-photo {
  position: absolute;
-    top: 50%;
+    top: 20%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
@@ -324,4 +324,6 @@ button {
     border-radius: 5px;
     margin-top: 20px;
 }
+
+/*그래프*/
 

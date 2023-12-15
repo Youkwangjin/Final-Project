@@ -16,3 +16,47 @@
     height: 700px;
     background01-color: #666;
 }
+
+/* 그래프 */
+.graphWrap {
+    position: relative;
+    top: 250px;
+    left: 10px;
+    width: 470px;
+    height: 300px;
+    margin: 0px auto 0;
+    border-bottom: 3px solid #aaa;
+    text-align: center;
+}
+
+.graphWrap .graph > div {
+    position: absolute;
+    bottom: 0;
+    width: 69px;
+    border-radius: 10px 10px 0 0;
+}
+
+.graphWrap .graph > div#item1 {
+    left: 0px;
+    background: #b9fc76;
+}
+
+.graphWrap .graph > div#item2 {
+    left: 100px;
+    background: #57b4c1;
+}
+
+.graphWrap .graph > div#item3 {
+    left: 200px;
+    background: #f9f4d2;
+}
+
+.graphWrap .graph > div#item4 {
+    left: 300px;
+    background: #fb8851;
+}
+
+.graphWrap .graph > div#item5 {
+    left: 400px;
+    background: #b90f43;
+}
