@@ -1,19 +1,21 @@
 from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from django.shortcuts import render
 import json
 import base64
+import numpy as np
 from django.http import JsonResponse
 from .models import Personal, Faceshape, Scalp
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-
+from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from tensorflow.keras.models import load_model
 from django.conf import settings
 import os
-# 모델을 불러옵니다. 이 경로는 실제 모델 파일의 위치를 반영해야 합니다.
-fmodel_path = os.path.join(settings.BASE_DIR,'C:/Users/SEOHO/Desktop/wdataset', 'shape_vgg16.h5')
-fmodel = load_model(fmodel_path)
 
+# 모델을 불러옵니다. 이 경로는 실제 모델 파일의 위치를 반영해야 합니다.
+fmodel_path = os.path.join(settings.BASE_DIR, 'C:/work/pysou/makemeuppro/mainapp/models/', 'shape_vgg16.h5')
+fmodel = load_model(fmodel_path)
 def main(request):
     return render(request, 'index.html')
 
@@ -59,20 +61,13 @@ def upload_personal_image(request):
         # Personal 모델 인스턴스 생성 및 저장
         new_personal = Personal(
             personal_result=data.get('personal_result', ''),  # 내용, 없다면 빈 문자열
-            personal_imgpath=image_file,  # 이미지 파일
-            personal_dt=timezone.now(),  # 등록일자, 현재 시간으로 설정
-            # personal_id는 자동 증가 필드로 가정, 필요하다면 명시적으로 설정
-            # personal_content=data.get('personal_content', None)  # 내용, null 허용 필드
+            personal_imgpath=image_file,
+            personal_dt=timezone.now(),
         )
         new_personal.save()
 
         return JsonResponse({'status': 'success', 'personal_id': new_personal.personal_id})
     return JsonResponse({'status': 'fail'})
-
-import tensorflow
-from django.shortcuts import render
-from tensorflow.keras.preprocessing.image import load_img, img_to_array  # 함수를 직접 가져옵니다.
-import numpy as np
 
 @csrf_exempt
 def upload_faceshape_image(request):
@@ -80,33 +75,37 @@ def upload_faceshape_image(request):
         # JSON 데이터 로딩
         data = json.loads(request.body)
         image_data = data['image_data']
-        format, imgstr = image_data.split(';base64,')  # 이미지 포맷과 데이터 분리
-        ext = format.split('/')[-1]  # 파일 확장자 추출
+        format, imgstr = image_data.split(';base64,')
+        ext = format.split('/')[-1]
 
         # 이미지 데이터를 ContentFile로 변환
         image_file = ContentFile(base64.b64decode(imgstr), name='faceshape.' + ext)
+        saved_image_path = default_storage.save('faceshapes/' + image_file.name, image_file)
 
-        # Faceshape 모델 인스턴스 생성 및 저장
+        # 저장된 이미지로 분석을 수행합니다.
+        full_image_path = os.path.join(settings.MEDIA_ROOT, saved_image_path)
+        predicted_class, predictions_percent = classify_face_shape(full_image_path)
+
+        # 분석 결과를 Faceshape 인스턴스에 저장합니다.
         new_faceshape = Faceshape(
-            faceshape_result=data.get('faceshape_result', ''),  # 결과, 없다면 빈 문자열
-            faceshape_imgpath=image_file,  # 이미지 파일
-            faceshape_dt=timezone.now(),  # 등록일자, 현재 시간으로 설정
-            # 기타 필요한 필드들을 추가
+            faceshape_result=predicted_class,  # 분석 결과
+            faceshape_imgpath=saved_image_path,  # 저장된 이미지 경로
+            faceshape_dt=timezone.now()  # 현재 시간
         )
         new_faceshape.save()
 
-        return JsonResponse({'status': 'success', 'faceshape_id': new_faceshape.faceshape_id})
+        return JsonResponse({'status': 'success', 'faceshape_id': new_faceshape.faceshape_id, 'faceshape_result': predicted_class})
     return JsonResponse({'status': 'fail'})
+
+
+
 
 
 # 이미지 로드 및 전처리(얼굴형)
 def classify_face_shape(img_path):
     img = load_img(img_path, target_size=(224, 224))  # 이미지 로드 및 크기 조정
     img_array = img_to_array(img)  # 이미지를 배열로 변환
-    # print('img_array : ', img_array[0])
     img_array = np.expand_dims(img_array, axis=0)  # 행 방향으로 차원 확대
-    # img_array /= 255.0  # 정규화
-    # print('img_array : ', img_array)
     # 이미지를 분류하고 결과를 반환합니다.
     predictions = fmodel.predict(img_array)
     print('Predictions:', predictions)  # 변환된 이미지의 배열값을 확인
@@ -119,30 +118,10 @@ def classify_face_shape(img_path):
     class_names = ['하트형', '직사각형', '계란형', '둥근형', '사각형']
     # 가장 높은 확률을 가진 클래스의 인덱스를 찾습니다. (axis=-1 추가)
     predicted_class = class_names[predicted_index[0]]
-    print('predicted_class : ', predicted_class)
+    # print('predicted_class : ', predicted_class)
 
     # 예측된 각 클래스의 확률과 가장 높은 확률을 가진 클래스를 반환합니다.
     return predicted_class, predictions_percent
-
-
-# 이 뷰 함수는 클라이언트로부터 요청을 받아 처리합니다 .
-from django.shortcuts import render
-from django.http import JsonResponse
-from .models import Faceshape
-from django.conf import settings
-import os
-
-# classify_face_shape 함수 정의
-
-from django.shortcuts import render
-from django.http import JsonResponse
-from .models import Faceshape
-from django.conf import settings
-import os
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
-import numpy as np
-
-# 여기에 classify_face_shape 함수를 정의해주세요 .
 
 def styleresult_view(request):
     try:
