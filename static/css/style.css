@@ -147,7 +147,7 @@ p:last-child {
 .sub-background {
     background-image: url(/static/image/bg3.jpg);
     background-size: cover;
-    background-position: center center; /* 필요에 따라 조절 */
+    background-position: top; /* 필요에 따라 조절 */
     background-repeat: no-repeat;
     background-color: transparent;
 }
