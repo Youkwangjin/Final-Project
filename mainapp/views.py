@@ -125,7 +125,7 @@ def classify_face_shape(img_path):
     return predicted_class, predictions_percent
 
 
-# 이 뷰 함수는 클라이언트로부터 요청을 받아 처리합니다.
+# 이 뷰 함수는 클라이언트로부터 요청을 받아 처리합니다 .
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Faceshape
@@ -142,7 +142,7 @@ import os
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import numpy as np
 
-# 여기에 classify_face_shape 함수를 정의해주세요.
+# 여기에 classify_face_shape 함수를 정의해주세요 .
 
 def styleresult_view(request):
     try:
