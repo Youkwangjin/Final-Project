@@ -85,18 +85,12 @@ $(document).ready(function() {
 });	
 
 
-
-
-
 	// Page Loader
 	setTimeout(function(){
 		$('body').addClass('loaded')
 	}, 1000);
 	
-	
-	
-	
-	
+
 	// Menu
 	$(window).on("resize", function () {
   var positionTop = window.innerHeight / 2;
