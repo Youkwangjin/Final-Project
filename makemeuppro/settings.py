@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from django.conf import settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -15,6 +16,16 @@ SECRET_KEY = "django-insecure-^0&ah8tak4ds+)r)^iy)2e^rm6h$43!9mfsnm7f(neo+%#-4#h
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+
+MODEL_PATH = os.getenv('MODEL_PATH')
+
+# 로컬과 Docker 환경을 구분하기 위한 설정
+if settings.DEBUG:
+    # 로컬 환경 설정
+    fmodel_path = 'C:/work/pysou/makemeuppro/mainapp/models/shape_vgg16.h5'
+else:
+    # Docker 환경 설정
+    fmodel_path = '/app/models/shape_vgg16.h5'
 
 
 # Application definition
@@ -69,7 +80,7 @@ DATABASES = {
         "NAME": "makemeupdb",
         "USER": "root",
         "PASSWORD": "seoho123",
-        "HOST": "127.0.0.1",
+        "HOST": "localhost",
         "PORT": "3307",
     }
 }
