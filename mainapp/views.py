@@ -5,7 +5,7 @@ import json
 import base64
 import numpy as np
 from django.http import JsonResponse
-from .models import Personal, Faceshape, Scalp, Facerecorn
+from .models import Personal, Faceshape, Scalp
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
@@ -104,10 +104,7 @@ def upload_faceshape_image(request):
 def classify_face_shape(img_path):
     img = load_img(img_path, target_size=(224, 224))  # 이미지 로드 및 크기 조정
     img_array = img_to_array(img)  # 이미지를 배열로 변환
-    # print('img_array : ', img_array[0])
     img_array = np.expand_dims(img_array, axis=0)  # 행 방향으로 차원 확대
-    # img_array /= 255.0  # 정규화
-    # print('img_array : ', img_array)
     # 이미지를 분류하고 결과를 반환합니다.
     predictions = fmodel.predict(img_array)
     predictions = fmodel.predict(img_array)
@@ -128,28 +125,7 @@ def classify_face_shape(img_path):
     # 예측된 각 클래스의 확률과 가장 높은 확률을 가진 클래스를 반환합니다.
     return predicted_class, predictions_percent
 
-
-# 이 뷰 함수는 클라이언트로부터 요청을 받아 처리합니다 .
-from django.shortcuts import render
-from django.http import JsonResponse
-from .models import Faceshape
-from django.conf import settings
-import os
-
-# classify_face_shape 함수 정의
-
-from django.shortcuts import render
-from django.http import JsonResponse
-from .models import Faceshape
-from django.conf import settings
-import os
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
-import numpy as np
-
-# 여기에 classify_face_shape 함수를 정의해주세요 .
-
 def styleresult_view(request):
-
     try:
         # 데이터베이스에서 가장 최근에 추가된 Faceshape 인스턴스를 가져온다.
         latest_faceshape = Faceshape.objects.latest('faceshape_dt')
