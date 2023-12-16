@@ -6,12 +6,12 @@ from django.http import JsonResponse
 from .models import Personal, Faceshape, Scalp
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-
-from tensorflow.keras.models import load_model
+from keras.models import load_model
 from django.conf import settings
 import os
+
 # 모델을 불러옵니다. 이 경로는 실제 모델 파일의 위치를 반영해야 합니다.
-fmodel_path = os.path.join(settings.BASE_DIR,'C:/Users/SEOHO/Desktop/wdataset', 'shape_vgg16.h5')
+fmodel_path = os.path.join(settings.BASE_DIR,'../Final-Project/mainapp/models', 'shape_vgg16.h5')
 fmodel = load_model(fmodel_path)
 
 def main(request):
@@ -71,7 +71,7 @@ def upload_personal_image(request):
 
 import tensorflow
 from django.shortcuts import render
-from tensorflow.keras.preprocessing.image import load_img, img_to_array  # 함수를 직접 가져옵니다.
+from keras.preprocessing.image import load_img, img_to_array  # 함수를 직접 가져옵니다.
 import numpy as np
 
 @csrf_exempt
@@ -139,7 +139,7 @@ from django.http import JsonResponse
 from .models import Faceshape
 from django.conf import settings
 import os
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
+# from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import numpy as np
 
 # 여기에 classify_face_shape 함수를 정의해주세요 .
