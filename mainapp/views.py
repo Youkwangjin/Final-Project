@@ -5,7 +5,7 @@ import json
 import base64
 import numpy as np
 from django.http import JsonResponse
-from .models import Personal, Faceshape, Scalp
+from .models import Personal, Faceshape, Scalp, Facerecorn
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
@@ -14,7 +14,7 @@ from django.conf import settings
 import os
 
 # 모델을 불러옵니다. 이 경로는 실제 모델 파일의 위치를 반영해야 합니다.
-fmodel_path = os.path.join(settings.BASE_DIR, 'C:/work/pysou/makemeuppro/mainapp/models/', 'shape_vgg16.h5')
+fmodel_path = os.path.join(settings.BASE_DIR,'../Final-Project/mainapp/models', 'shape_vgg16.h5')
 fmodel = load_model(fmodel_path)
 def main(request):
     return render(request, 'index.html')
@@ -71,6 +71,7 @@ def upload_personal_image(request):
 
 @csrf_exempt
 def upload_faceshape_image(request):
+    # 사용자가 웹캠으로 캡처한 이미지를 서버에서 분석하고 결과를 저장
     if request.method == 'POST':
         # JSON 데이터 로딩
         data = json.loads(request.body)
@@ -103,7 +104,10 @@ def upload_faceshape_image(request):
 def classify_face_shape(img_path):
     img = load_img(img_path, target_size=(224, 224))  # 이미지 로드 및 크기 조정
     img_array = img_to_array(img)  # 이미지를 배열로 변환
+    # print('img_array : ', img_array[0])
     img_array = np.expand_dims(img_array, axis=0)  # 행 방향으로 차원 확대
+    # img_array /= 255.0  # 정규화
+    # print('img_array : ', img_array)
     # 이미지를 분류하고 결과를 반환합니다.
     predictions = fmodel.predict(img_array)
     predictions = fmodel.predict(img_array)
@@ -124,28 +128,48 @@ def classify_face_shape(img_path):
     # 예측된 각 클래스의 확률과 가장 높은 확률을 가진 클래스를 반환합니다.
     return predicted_class, predictions_percent
 
-def styleresult_view(request):
-    try:
-        # 데이터베이스에서 가장 최근에 추가된 Faceshape 인스턴스를 가져옵니다.
-        latest_faceshape = Faceshape.objects.latest('faceshape_dt')
 
-        # MEDIA_ROOT를 사용하여 전체 파일 경로를 구성합니다.
+# 이 뷰 함수는 클라이언트로부터 요청을 받아 처리합니다 .
+from django.shortcuts import render
+from django.http import JsonResponse
+from .models import Faceshape
+from django.conf import settings
+import os
+
+# classify_face_shape 함수 정의
+
+from django.shortcuts import render
+from django.http import JsonResponse
+from .models import Faceshape
+from django.conf import settings
+import os
+from tensorflow.keras.preprocessing.image import load_img, img_to_array
+import numpy as np
+
+# 여기에 classify_face_shape 함수를 정의해주세요 .
+
+def styleresult_view(request):
+
+    try:
+        # 데이터베이스에서 가장 최근에 추가된 Faceshape 인스턴스를 가져온다.
+        latest_faceshape = Faceshape.objects.latest('faceshape_dt')
         img_path = os.path.join(settings.MEDIA_ROOT, str(latest_faceshape.faceshape_imgpath))
 
-        # 이미지 분류 함수를 호출합니다.
+        # 이미지 분류 함수를 호출
         predicted_class, predictions_percent = classify_face_shape(img_path)
 
-        # 분류 결과와 확률을 템플릿에 전달합니다.
+        # 해당 얼굴형에 맞는 헤어스타일을 Facerecorn 테이블에서 조회 (inner join)
+        recommended_hairstyles = Facerecorn.objects.filter(faceshape_result=predicted_class)
+
         context = {
             'face_shape': predicted_class,
-            'predictions_percent': predictions_percent
+            'predictions_percent': predictions_percent,
+            'recommended_hairstyles': recommended_hairstyles
         }
         return render(request, 'styleresult.html', context)
     except Faceshape.DoesNotExist:
-        # Faceshape 인스턴스가 없는 경우 오류 메시지와 함께 응답합니다.
         return JsonResponse({'status': 'fail', 'message': 'No face shape record found.'})
     except Exception as e:
-        # 기타 예외 처리
         return JsonResponse({'status': 'fail', 'message': str(e)})
 
 

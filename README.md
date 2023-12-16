@@ -33,8 +33,7 @@
 
 # 시스템 구성도
 
-![image](https://github.com/Youkwangjin/Final-Project/assets/117841714/3f3f1ae1-f536-4ee7-adaf-4f49ce8117b7)
-
+![image](https://github.com/Youkwangjin/Final-Project/assets/117841714/08622152-5308-4c8d-9720-c80011aa3131)
 
 
 # 데이터 분석 과정
