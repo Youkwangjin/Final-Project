@@ -4,8 +4,8 @@ from django.db import models
 
 class Facerecorn(models.Model):
     facerecorn_id = models.AutoField(primary_key=True)
-    faceshape_id = models.IntegerField()
-    hair_imgpath = models.CharField(max_length=255)
+    faceshape_result = models.CharField(max_length=20)
+    hair_imgpath = models.ImageField(upload_to='hairstyle/')
     hair_name = models.CharField(max_length=20)
     hair_content = models.CharField(max_length=50)
 
@@ -38,7 +38,7 @@ class Personal(models.Model):
 
 class Personalrecorn(models.Model):
     personalrecorn_id = models.AutoField(primary_key=True)
-    personal_id = models.IntegerField()
+    personal_result = models.CharField(max_length=20, blank=True, null=True)
     cosmetics = models.CharField(max_length=10)
     dyecolor = models.CharField(max_length=20)
 
@@ -60,7 +60,7 @@ class Scalp(models.Model):
 
 class Scalprecorn(models.Model):
     scalprecorn_id = models.AutoField(primary_key=True)
-    scalp_id = models.IntegerField()
+    scalp_result = models.CharField(max_length=20)
     scalprecorn_imgpath = models.CharField(max_length=255)
     scalprecorn_name = models.CharField(max_length=20)
     scalprecorn_content = models.CharField(max_length=50)

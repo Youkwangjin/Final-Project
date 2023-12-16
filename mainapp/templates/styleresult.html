@@ -20,27 +20,71 @@
     }
 
     #left-ad-container, #right-ad-container {
-    position: fixed;
-    top: 50%; /* 중앙 정렬 */
-    transform: translateY(-50%);
-    width: 120px; /* 광고의 너비 */
-    height: 600px; /* 광고의 높이 */
-}
-
-#left-ad-container {
-    left: 50px; /* 왼쪽 여백 */
-}
-
-#right-ad-container {
-    right: 300px; /* 오른쪽 여백 */
-}
-
-/* 화면 크기가 768px 이하일 때 광고 숨김 */
-@media (max-width: 768px) {
-    #left-ad-container, #right-ad-container {
-        display: none;
+        position: fixed;
+        top: 50%; /* 중앙 정렬 */
+        transform: translateY(-50%);
+        width: 120px; /* 광고의 너비 */
+        height: 600px; /* 광고의 높이 */
     }
-}
+
+    #left-ad-container {
+        left: 50px; /* 왼쪽 여백 */
+    }
+
+    #right-ad-container {
+        right: 300px; /* 오른쪽 여백 */
+    }
+
+    /* 화면 크기가 768px 이하일 때 광고 숨김 */
+    @media (max-width: 768px) {
+        #left-ad-container, #right-ad-container {
+            display: none;
+        }
+    }
+
+    /* 광진 작업 12/15 (추천 헤어스타일 결과 출력 CSS) */
+    .hairstyles {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center; /* 가운데 정렬 */
+        gap: 20px; /* 각 항목 사이의 간격 */
+        margin-top: 20px; /* 상단 여백 */
+    }
+
+    .hairstyle {
+        text-align: center; /* 텍스트 가운데 정렬 */
+        width: 200px; /* 너비 지정 */
+        margin-bottom: 20px; /* 아래쪽 여백 */
+    }
+
+    .hairstyle img {
+        max-width: 100%; /* 이미지가 컨테이너 너비를 초과하지 않도록 */
+        height: auto; /* 이미지 비율 유지 */
+        border-radius: 10px; /* 이미지에 둥근 모서리 적용 */
+        margin-bottom: 10px; /* 이미지와 텍스트 사이의 간격 */
+    }
+
+    .hairstyle h3 {
+        margin: 10px 0; /* 상하 여백 */
+        font-size: 1.2em; /* 제목 크기 조정 */
+    }
+
+    .hairstyle p {
+        margin: 5px 0; /* 상하 여백 */
+        font-size: 0.9em; /* 본문 크기 조정 */
+    }
+
+    h2.recommended-title {
+        text-align: center; /* 가운데 정렬 */
+        margin-top: 40px; /* 위쪽 여백 */
+        margin-bottom: 30px; /* 아래쪽 여백 */
+    }
+    .title-container {
+        text-align: center; /* 가운데 정렬 */
+        margin-top: 40px; /* 위쪽 여백 */
+        margin-bottom: 30px; /* 아래쪽 여백 */
+    }
+
 </style>
 <!--<body class="sub-background">-->
 <body class="sub-background">
@@ -81,12 +125,21 @@
         </div>
     </div>
 <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-    <div id="photo-container">
-        <img src="/media/faceshapes/faceshape.png" alt="사진 1" class="photo">
-        <img src="/media/faceshapes/faceshape.png" alt="사진 1" class="photo">
-        <img src="/media/faceshapes/faceshape.png" alt="사진 1" class="photo">
-        <img src="/media/faceshapes/faceshape.png" alt="사진 1" class="photo">
-        <img src="/media/faceshapes/faceshape.png" alt="사진 1" class="photo">
+    <!-- 광진 작업 추천 헤어스타일 출력 -->
+    <div class="title-container">
+        <h2>{{ face_shape }}에 추천하는 헤어스타일</h2>
+    </div>
+
+    <div class="hairstyles">
+        {% for hairstyle in recommended_hairstyles %}
+            <div class="hairstyle">
+                <h3>{{ hairstyle.hair_name }}</h3>
+                <img src="{{ hairstyle.hair_imgpath.url }}" alt="{{ hairstyle.hair_name }}">
+                <p>{{ hairstyle.hair_content }}</p>
+            </div>
+        {% empty %}
+            <p>추천 헤어스타일이 없습니다.</p>
+        {% endfor %}
     </div>
 </section>
 
