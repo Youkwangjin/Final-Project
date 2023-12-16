@@ -19,6 +19,20 @@
         }
     });
 </script>
+<!-- face_shape_result.html -->
+<h1>Face Shape Classification Results</h1>
 
+{% for key, result in classification_results.items %}
+  <h2>Model {{ key }}:</h2>
+  <p>Predicted class: {{ result.predicted_class_name }}</p>
+  <p>Class probabilities:</p>
+  <ul>
+    {% for percent in result.predictions_percent %}
+      <li>{{ percent }}</li>
+    {% endfor %}
+  </ul>
+{% endfor %}
+
+<h2>Final Result: {{ final_result }}</h2>
 </body>
 </html>

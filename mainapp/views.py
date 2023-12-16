@@ -1,18 +1,38 @@
 from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from django.shortcuts import render
 import json
 import base64
+import numpy as np
 from django.http import JsonResponse
-from .models import Personal, Faceshape, Scalp
+from .models import Personal, Faceshape, Scalp, Facerecorn
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-
+from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from tensorflow.keras.models import load_model
 from django.conf import settings
 import os
+
+
+
 # 모델을 불러옵니다. 이 경로는 실제 모델 파일의 위치를 반영해야 합니다.
 fmodel_path = os.path.join(settings.BASE_DIR,'C:/Users/Cho/PycharmProjects/Final-Project/mainapp/models', 'shape_vgg16.h5')
 fmodel = load_model(fmodel_path)
+
+keras_model1_path = os.path.join(settings.BASE_DIR, 'C:/Users/Cho/PycharmProjects/Final-Project/mainapp/models', 'dupi_model1.hdf5')
+keras_model2_path = os.path.join(settings.BASE_DIR, 'C:/Users/Cho/PycharmProjects/Final-Project/mainapp/models', 'dupi_model2.hdf5')
+keras_model3_path = os.path.join(settings.BASE_DIR, 'C:/Users/Cho/PycharmProjects/Final-Project/mainapp/models', 'dupi_model3.hdf5')
+keras_model4_path = os.path.join(settings.BASE_DIR, 'C:/Users/Cho/PycharmProjects/Final-Project/mainapp/models', 'dupi_model4.hdf5')
+keras_model5_path = os.path.join(settings.BASE_DIR, 'C:/Users/Cho/PycharmProjects/Final-Project/mainapp/models', 'dupi_model5.hdf5')
+keras_model6_path = os.path.join(settings.BASE_DIR, 'C:/Users/Cho/PycharmProjects/Final-Project/mainapp/models', 'dupi_model6.hdf5')
+
+# TensorFlow 및 Keras 모델 로드
+keras_model1 = load_model(keras_model1_path)
+keras_model2 = load_model(keras_model2_path)
+keras_model3 = load_model(keras_model3_path)
+keras_model4 = load_model(keras_model4_path)
+keras_model5 = load_model(keras_model5_path)
+keras_model6 = load_model(keras_model6_path)
 
 def main(request):
     return render(request, 'index.html')
@@ -29,9 +49,9 @@ def hairloss_view(request):
     # Your view logic goes here
     return render(request, 'hairloss.html')
 
-def hairlossresult_view(request):
-    # Your view logic goes here
-    return render(request, 'hairlossresult.html')
+# def hairlossresult_view(request):
+#     # Your view logic goes here
+#     return render(request, 'hairlossresult.html')
 
 def personalcolorresult_view(request):
     # Your view logic goes here
@@ -69,10 +89,6 @@ def upload_personal_image(request):
         return JsonResponse({'status': 'success', 'personal_id': new_personal.personal_id})
     return JsonResponse({'status': 'fail'})
 
-import tensorflow
-from django.shortcuts import render
-from tensorflow.keras.preprocessing.image import load_img, img_to_array  # 함수를 직접 가져옵니다.
-import numpy as np
 
 @csrf_exempt
 def upload_faceshape_image(request):
@@ -124,14 +140,6 @@ def classify_face_shape(img_path):
     # 예측된 각 클래스의 확률과 가장 높은 확률을 가진 클래스를 반환합니다.
     return predicted_class, predictions_percent
 
-
-# 이 뷰 함수는 클라이언트로부터 요청을 받아 처리합니다 .
-from django.shortcuts import render
-from django.http import JsonResponse
-from .models import Faceshape
-from django.conf import settings
-import os
-
 # classify_face_shape 함수 정의
 
 from django.shortcuts import render
@@ -143,7 +151,6 @@ from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import numpy as np
 
 # 여기에 classify_face_shape 함수를 정의해주세요~! .
-
 def styleresult_view(request):
     try:
         # 데이터베이스에서 가장 최근에 추가된 Faceshape 인스턴스를 가져옵니다.
@@ -188,8 +195,100 @@ def upload_scalp_image(request):
             )
             new_scalp.save()
 
-            return JsonResponse({'status': 'success', 'scalp_id': new_scalp.scalp_id})
-        else:
-            return JsonResponse({'status': 'fail', 'message': 'No photo uploaded'})
+        return JsonResponse({'status': 'success', 'faceshape_id': new_scalp.scalp_id})
+    return JsonResponse({'status': 'fail'})
 
-    return JsonResponse({'status': 'fail', 'message': 'Invalid request method'})
+
+def classify_scalp_type(img_path):
+    img = load_img(img_path, target_size=(224, 224))
+    img_array = img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+    img_array /= 255.0
+
+    predictions = [keras_model1.predict(img_array), keras_model2.predict(img_array), ...]
+    class_names = [
+        ['모낭사이홍반_0.양호', '모낭사이홍반_1.경증', '모낭사이홍반_2.중등도', '모낭사이홍반_3.중증'],
+        ['미세각질_0.양호', '미세각질_1.경증', '미세각질_2.중등도', '미세각질_3.중증'],
+        ['모낭사이홍반_0.양호', '모낭사이홍반_1.경증', '모낭사이홍반_2.중등도', '모낭사이홍반_3.중증'],
+        ['미세각질_0.양호', '미세각질_1.경증', '미세각질_2.중등도', '미세각질_3.중증'],
+        ['모낭사이홍반_0.양호', '모낭사이홍반_1.경증', '모낭사이홍반_2.중등도', '모낭사이홍반_3.중증'],
+        ['미세각질_0.양호', '미세각질_1.경증', '미세각질_2.중등도', '미세각질_3.중증']
+    ]
+
+    results = {}
+    for i, (pred, names) in enumerate(zip(predictions, class_names), start=1):
+        predicted_class = np.argmax(pred)
+        predicted_class_name = names[predicted_class]
+        predictions_percent = pred[0] * 100
+        results[f'model{i}'] = {
+            'predicted_class_name': predicted_class_name,
+            'predictions_percent': predictions_percent.tolist(),
+            'predicted_class': predicted_class
+        }
+
+    # 이진 분류 결과 생성
+    result_model1 = 'Good' if class_names[[0]] == 0 else 'Bad'
+    result_model2 = 'Good' if class_names[[1]] == 0 else 'Bad'
+    result_model3 = 'Good' if class_names[[2]] == 0 else 'Bad'
+    result_model4 = 'Good' if class_names[[3]] == 0 else 'Bad'
+    result_model5 = 'Good' if class_names[[4]] == 0 else 'Bad'
+    result_model6 = 'Good' if class_names[[5]] == 0 else 'Bad'
+
+    # 이진 분류 결과에 따른 최종 결과 생성
+    if result_model1 == 'Good' and result_model2 == 'Good' and result_model3 == 'Good' and result_model4 == 'Good' and result_model5 == 'Good' and result_model6 == 'Good':
+        final_result = '양호'
+    elif result_model1 == 'Bad' and result_model2 == 'Good' and result_model3 == 'Good' and result_model4 == 'Good' and result_model5 == 'Good' and result_model6 == 'Good':
+        final_result = '건성'
+    elif result_model1 == 'Good' and result_model2 == 'Bad' and result_model3 == 'Good' and result_model4 == 'Good' and result_model5 == 'Good' and result_model6 == 'Good':
+        final_result = '지성'
+    elif result_model2 == 'Good' and result_model3 == 'Bad' and result_model4 == 'Good' and result_model5 == 'Good' and result_model6 == 'Good':
+        final_result = '민감성'
+    elif result_model2 == 'Bad' and result_model3 == 'Bad' and result_model4 == 'Good' and result_model6 == 'Good':
+        final_result = '지루성'
+    elif result_model3 == 'Good' and result_model4 == 'Bad' and result_model6 == 'Good':
+        final_result = '염증성'
+    elif result_model3 == 'Good' and result_model4 == 'Good' and result_model5 == 'Bad' and result_model6 == 'Good':
+        final_result = '비듬성'
+    elif result_model1 == 'Good' and result_model2 == 'Good' and result_model3 == 'Good' and result_model4 == 'Good' and result_model5 == 'Good' and result_model6 == 'Bad':
+        final_result = '탈모성'
+    else:
+        final_result = '복합성'
+
+    return results, final_result
+
+from django.shortcuts import render
+
+def hairlossresult_view(request, img_path):
+    # 이미지 분류 함수를 호출합니다.
+    classification_results, final_result = classify_scalp_type(img_path)
+
+    # 분류 결과와 최종 결과를 템플릿에 전달합니다.
+    context = {
+        'classification_results': classification_results,
+        'final_result': final_result
+    }
+    return render(request, 'hairlossresult.html', context)
+
+# def hairlossresult_view(request):
+#     try:
+#         # 데이터베이스에서 가장 최근에 추가된 Scalp 인스턴스를 가져옵니다.
+#         latest_scalp = Scalp.objects.latest('scalp_dt')
+#
+#         # MEDIA_ROOT를 사용하여 전체 파일 경로를 구성합니다.
+#         img_path = os.path.join(settings.MEDIA_ROOT, str(latest_scalp.scalp_imgpath))
+#
+#         # 이미지 분류 함수를 호출합니다.
+#         predicted_class, predictions_percent = classify_scalp_image(img_path)
+#
+#         # 분류 결과와 확률을 템플릿에 전달합니다.
+#         context = {
+#             'scalp_condition': predicted_class,
+#             'predictions_percent': predictions_percent
+#         }
+#         return render(request, 'hairlossresult.html', context)
+#     except ObjectDoesNotExist:
+#         # Scalp 인스턴스가 없는 경우 오류 메시지와 함께 응답합니다.
+#         return JsonResponse({'status': 'fail', 'message': 'No scalp record found.'})
+#     except Exception as e:
+#         # 기타 예외 처리
+#         return JsonResponse({'status': 'fail', 'message': str(e)})
