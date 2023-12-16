@@ -3,16 +3,156 @@
 
 {% include "head.html" %}
 {% include "header.html" %}
+<style>
+    /* 사진 컨테이너 스타일 */
+    #photo-container {
+        display: flex;
+        justify-content: center; /* 가로 중앙 정렬 */
+        align-items: center; /* 세로 중앙 정렬 */
+        margin-top: 20px; /* 그래프와의 간격 조절 */
+    }
 
+    /* 사진 스타일 */
+    .photo {
+        width: 300px; /* 사진 너비 조절 */
+        height: 300px; /* 사진 높이 조절 */
+        margin: 0 20px; /* 사진 간격 조절 */
+    }
+
+    #left-ad-container, #right-ad-container {
+        position: fixed;
+        top: 50%; /* 중앙 정렬 */
+        transform: translateY(-50%);
+        width: 120px; /* 광고의 너비 */
+        height: 600px; /* 광고의 높이 */
+    }
+
+    #left-ad-container {
+        left: 50px; /* 왼쪽 여백 */
+    }
+
+    #right-ad-container {
+        right: 300px; /* 오른쪽 여백 */
+    }
+
+    /* 화면 크기가 768px 이하일 때 광고 숨김 */
+    @media (max-width: 768px) {
+        #left-ad-container, #right-ad-container {
+            display: none;
+        }
+    }
+
+    /* 광진 작업 12/15 (추천 헤어스타일 결과 출력 CSS) */
+    .hairstyles {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center; /* 가운데 정렬 */
+        gap: 20px; /* 각 항목 사이의 간격 */
+        margin-top: 20px; /* 상단 여백 */
+    }
+
+    .hairstyle {
+        text-align: center; /* 텍스트 가운데 정렬 */
+        width: 200px; /* 너비 지정 */
+        margin-bottom: 20px; /* 아래쪽 여백 */
+    }
+
+    .hairstyle img {
+        max-width: 100%; /* 이미지가 컨테이너 너비를 초과하지 않도록 */
+        height: auto; /* 이미지 비율 유지 */
+        border-radius: 10px; /* 이미지에 둥근 모서리 적용 */
+        margin-bottom: 10px; /* 이미지와 텍스트 사이의 간격 */
+    }
+
+    .hairstyle h3 {
+        margin: 10px 0; /* 상하 여백 */
+        font-size: 1.2em; /* 제목 크기 조정 */
+    }
+
+    .hairstyle p {
+        margin: 5px 0; /* 상하 여백 */
+        font-size: 0.9em; /* 본문 크기 조정 */
+    }
+
+    h2.recommended-title {
+        text-align: center; /* 가운데 정렬 */
+        margin-top: 40px; /* 위쪽 여백 */
+        margin-bottom: 30px; /* 아래쪽 여백 */
+    }
+    .title-container {
+        text-align: center; /* 가운데 정렬 */
+        margin-top: 40px; /* 위쪽 여백 */
+        margin-bottom: 30px; /* 아래쪽 여백 */
+    }
+
+</style>
+<!--<body class="sub-background">-->
 <body class="sub-background">
-        <section>
-<div id="hair-recommendation" class="text-center">
-    <!-- 찍은 사진을 표시할 이미지 엘리먼트 -->
-    <img id="captured-photo" alt="찍은 사진" src=""/>
-</div>
+<div id="left-ad-container">
+        <img src="/static/image/add.jpg" alt="사진 1" class="photo">
+    </div>
+    <div id="right-ad-container">
+        <img src="/static/image/add2.png" alt="사진 1" class="photo">
+    </div>
+<section>
+    <div id="hair-recommendation">
+        <!-- 찍은 사진을 표시할 이미지 엘리먼트 -->
+        <img id="captured-photo" width="200" height="200"/>
+    </div>
+
+    <div class="graphWrap">
+        <div class="graph">
+            <div id="item1">
+                <div class="bar"></div>
+                <div class="label">하트형 {{ predictions_percent.0 }}%</div>
+            </div>
+            <div id="item2">
+                <div class="bar"></div>
+                <div class="label">직사각형 {{ predictions_percent.1 }}%</div>
+            </div>
+            <div id="item3">
+                <div class="bar"></div>
+                <div class="label">계란형 {{ predictions_percent.2 }}%</div>
+            </div>
+            <div id="item4">
+                <div class="bar"></div>
+                <div class="label">둥근형 {{ predictions_percent.3 }}%</div>
+            </div>
+            <div id="item5">
+                <div class="bar"></div>
+                <div class="label">사각형 {{ predictions_percent.4 }}%</div>
+            </div>
+        </div>
+    </div>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <!-- 광진 작업 추천 헤어스타일 출력 -->
+    <div class="title-container">
+        <h2>{{ face_shape }}에 추천하는 헤어스타일</h2>
+    </div>
+
+    <div class="hairstyles">
+        {% for hairstyle in recommended_hairstyles %}
+            <div class="hairstyle">
+                <h3>{{ hairstyle.hair_name }}</h3>
+                <img src="{{ hairstyle.hair_imgpath.url }}" alt="{{ hairstyle.hair_name }}">
+                <p>{{ hairstyle.hair_content }}</p>
+            </div>
+        {% empty %}
+            <p>추천 헤어스타일이 없습니다.</p>
+        {% endfor %}
+    </div>
 </section>
-        <canvas id="canvas" width="1080" height="720"></canvas>
-    {% include "footer.html" %}
+
+{% include "footer.html" %}
+<!--이건 hidden으로 감춘거임! -->
+<p style="display: none;">예측된 얼굴 형태: <span id="faceShape"></span></p>
+<ul style="display: none;">
+    <li>하트형: <span id="heartShape"></span>%</li>
+    <li>직사각형: <span id="rectangleShape"></span>%</li>
+    <li>계란형: <span id="ovalShape"></span>%</li>
+    <li>둥근형: <span id="roundShape"></span>%</li>
+    <li>사각형: <span id="squareShape"></span>%</li>
+</ul>
 <script>
     // 로컬 스토리지에서 찍은 사진 데이터를 가져옴
     let capturedPhotoData = localStorage.getItem('capturedPhoto');
@@ -22,26 +162,46 @@
         // 이미지 엘리먼트의 소스로 찍은 사진을 설정
         document.getElementById('captured-photo').src = capturedPhotoData;
     }
-</script>
-       <!--
- <h1>얼굴 형태 분류 결과</h1>
-    {% if face_shape %}
-        <p>분류된 얼굴 형태: {{ face_shape }}</p>
-    {% else %}
-        <p>얼굴 형태를 분류할 수 없습니다.</p>
-    {% endif %}
-    -->
-    <h1>얼굴 형태 분류 결과</h1>
-    <p>예측된 얼굴 형태: {{ face_shape }}</p>
-    <p>각 클래스에 대한 확률:</p>
-    <ul>
-        <li>하트형: {{ predictions_percent.0 }}%</li>
-        <li>직사각형: {{ predictions_percent.1 }}%</li>
-        <li>계란형: {{ predictions_percent.2 }}%</li>
-        <li>둥근형: {{ predictions_percent.3 }}%</li>
-        <li>사각형: {{ predictions_percent.4 }}%</li>
-    </ul>
-<input type="button" value="추천 보기" name="frecommend"> 
+    // 그래프 관련 코드
+    //값들이 서버로부터 전달
+    var faceShape = "{{ face_shape }}";
+    var predictionsPercent = [{{ predictions_percent.0 }}, {{ predictions_percent.1 }}, {{ predictions_percent.2 }}, {{ predictions_percent.3 }}, {{ predictions_percent.4 }}]; // 각 형태에 대한 예측 백분율
 
+    // 결과를 HTML에 적용
+    document.getElementById("faceShape").textContent = faceShape;
+    document.getElementById("heartShape").textContent = predictionsPercent[0];
+    document.getElementById("rectangleShape").textContent = predictionsPercent[1];
+    document.getElementById("ovalShape").textContent = predictionsPercent[2];
+    document.getElementById("roundShape").textContent = predictionsPercent[3];
+    document.getElementById("squareShape").textContent = predictionsPercent[4];
+
+    // 그래프 업데이트
+    function updateGraph() {
+        let graphHeights = predictionsPercent.map(percent => percent * 5); // 100% = 500px 최대 높이임
+
+        for (let i = 0; i < graphHeights.length; i++) {
+            let graphElement = document.getElementById('item' + (i + 1));
+            let height = graphHeights[i];
+            graphElement.style.height = height + 'px';
+
+            // 동적 애니메이션 생성
+            let animationName = 'animate-height-' + i;
+            let keyframes = `@keyframes ${animationName} { from { height: 0px; } to { height: ${height}px; } }`;
+            document.styleSheets[0].insertRule(keyframes, 0);
+
+            graphElement.style.animation = `${animationName} 10s`;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        updateGraph();
+    });
+
+    updateGraph();
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+    });
+</script>
 </body>
 </html>
