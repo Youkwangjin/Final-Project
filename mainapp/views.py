@@ -4,17 +4,18 @@ from django.shortcuts import render
 import json
 import base64
 import numpy as np
+from PIL import Image
 from django.http import JsonResponse
-from .models import Personal, Faceshape, Scalp
+from .models import Personal, Faceshape, Scalp, Facerecorn
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
-from tensorflow.keras.models import load_model
+from keras.preprocessing.image import load_img, img_to_array
+from keras.models import load_model
 from django.conf import settings
 import os
 
 # 모델을 불러옵니다. 이 경로는 실제 모델 파일의 위치를 반영해야 합니다.
-fmodel_path = os.path.join(settings.BASE_DIR,'../Final-Project/mainapp/models', 'shape_vgg16.h5')
+fmodel_path = os.path.join(settings.BASE_DIR,'../Final-Project/mainapp/models', 'shape_vgg16_process1.h5')
 fmodel = load_model(fmodel_path)
 def main(request):
     return render(request, 'index.html')
@@ -97,16 +98,68 @@ def upload_faceshape_image(request):
 
         return JsonResponse({'status': 'success', 'faceshape_id': new_faceshape.faceshape_id, 'faceshape_result': predicted_class})
     return JsonResponse({'status': 'fail'})
+'''
+import dlib
+import face_recognition
+# dlib 얼굴 감지기 초기화
+def classify_face_shape(img_path):
+    detector = dlib.get_frontal_face_detector()
 
+    # load_img를 이용해 이미지를 PIL 형식으로 로드합니다.
+    img = load_img(img_path)
+    img = img.resize((224, 224))  # 이미지 크기 조정
 
+    # PIL 이미지를 NumPy 배열로 변환
+    img_array = img_to_array(img)
+    print('img_array : ', img_array)
+    # NumPy 배열을 uint8 타입으로 변환 (dlib 처리를 위해)
+    img_array = img_array.astype('uint8')
 
+    # 얼굴 감지
+    faces = detector(img_array, 1)  # 두 번째 인자로 이미지의 업샘플링 횟수 지정
+    if len(faces) == 0:
+        print("얼굴을 감지하지 못했습니다.")
+        return None, None
+
+    # 첫 번째 감지된 얼굴을 사용합니다 (여러 얼굴이 있는 경우)
+    face = faces[0]
+
+    # 얼굴 영역을 기반으로 이미지를 crop합니다.
+    cropped_img = img_array[face.top():face.bottom(), face.left():face.right()]
+
+    # PIL 이미지로 변환
+    pil_image = Image.fromarray(cropped_img)
+    pil_image = pil_image.resize((224, 224))
+
+    # 이미지를 배열로 변환 및 차원 확대
+    img_array = img_to_array(pil_image)
+    # img_array = img_array / 255.0
+    img_array = np.expand_dims(img_array, axis=0)
+
+    # 이미지 분류 및 결과 반환
+    predictions = fmodel.predict(img_array)
+    print('Predictions:', predictions)
+
+    predictions_percent = [int(value * 100) for value in predictions[0]]
+    print('Predictions Percent as Integer:', predictions_percent)
+
+    predicted_index = np.argmax(predictions, axis=1)
+    print('predicted_index : ', predicted_index)
+
+    class_names = ['하트형', '직사각형', '계란형', '둥근형', '사각형']
+    predicted_class = class_names[predicted_index[0]]
+
+    return predicted_class, predictions_percent
+'''
 # 이미지 로드 및 전처리(얼굴형)
 def classify_face_shape(img_path):
     img = load_img(img_path, target_size=(224, 224))  # 이미지 로드 및 크기 조정
+    # ----
+    # face_locations = dlib
+    # ----
     img_array = img_to_array(img)  # 이미지를 배열로 변환
     img_array = np.expand_dims(img_array, axis=0)  # 행 방향으로 차원 확대
     # 이미지를 분류하고 결과를 반환합니다.
-    predictions = fmodel.predict(img_array)
     predictions = fmodel.predict(img_array)
     print('Predictions:', predictions)  # 변환된 이미지의 배열값을 확인
     # 각 클래스에 대한 예측 확률을 백분율로 변환하고 정수로 변환합니다.
@@ -124,6 +177,7 @@ def classify_face_shape(img_path):
 
     # 예측된 각 클래스의 확률과 가장 높은 확률을 가진 클래스를 반환합니다.
     return predicted_class, predictions_percent
+
 
 def styleresult_view(request):
     try:
