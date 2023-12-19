@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
 
@@ -54,6 +55,6 @@
             });
         </script>
     {% include "footer.html" %}
-<script src="/static/js/camera.js"></script>
+<script src="{% static 'js/camera.js' %}"></script>
 </body>
 </html>
