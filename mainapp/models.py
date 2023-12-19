@@ -39,8 +39,11 @@ class Personal(models.Model):
 class Personalrecorn(models.Model):
     personalrecorn_id = models.AutoField(primary_key=True)
     personal_result = models.CharField(max_length=20, blank=True, null=True)
-    cosmetics = models.CharField(max_length=10)
-    dyecolor = models.CharField(max_length=20)
+    product_category = models.CharField(max_length=20)
+    product_name = models.CharField(max_length=50)
+    product_imgpath = models.ImageField(upload_to='product/')
+    product_color = models.CharField(max_length=50)
+    product_price = models.IntegerField()
 
     class Meta:
         managed = False
@@ -61,10 +64,22 @@ class Scalp(models.Model):
 class Scalprecorn(models.Model):
     scalprecorn_id = models.AutoField(primary_key=True)
     scalp_result = models.CharField(max_length=20)
-    scalprecorn_imgpath = models.CharField(max_length=255)
+    scalprecorn_imgpath = models.ImageField(upload_to='scalprecorn/')
     scalprecorn_name = models.CharField(max_length=20)
-    scalprecorn_content = models.CharField(max_length=50)
+    scalprecorn_content = models.CharField(max_length=255)
 
     class Meta:
         managed = False
         db_table = 'scalprecorn'
+
+class Personaldesc(models.Model):
+    personaldesc_id = models.AutoField(primary_key=True)
+    personal_result = models.CharField(max_length=20)
+    personal_resultimg = models.ImageField(upload_to='personaldesc/')
+    personal_info = models.CharField(max_length=255)
+    personal_paletteimg = models.ImageField(upload_to='palette/')
+    personal_makeupinfo = models.CharField(max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'personaldesc'
