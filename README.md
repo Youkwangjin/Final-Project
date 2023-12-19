@@ -1,5 +1,5 @@
 # AI를 활용한 스타일 추천 서비스 (Team Project)
-- 참여자 : 최민혁, 조혁진, 이재민, 한지원, 유광진, 이서호, 김효림 (7명)
+- 참여자 : 최민혁, 조혁진, 이재민, 유광진, 이서호, 김효림 (6명)
 - 총 개발기간 : 2023/11/20 ~ 2023/12/26 (5주)
 
 
@@ -33,7 +33,8 @@
 
 # 시스템 구성도
 
-![image](https://github.com/Youkwangjin/Final-Project/assets/117841714/08622152-5308-4c8d-9720-c80011aa3131)
+![image](https://github.com/Youkwangjin/Final-Project/assets/117841714/3f3f1ae1-f536-4ee7-adaf-4f49ce8117b7)
+
 
 
 # 데이터 분석 과정

@@ -5,7 +5,7 @@ import json
 import base64
 import numpy as np
 from django.http import JsonResponse
-from .models import Personal, Faceshape, Scalp
+from .models import Personal, Faceshape, Scalp, Facerecorn
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
@@ -71,6 +71,7 @@ def upload_personal_image(request):
 
 @csrf_exempt
 def upload_faceshape_image(request):
+    # 사용자가 웹캠으로 캡처한 이미지를 서버에서 분석하고 결과를 저장
     if request.method == 'POST':
         # JSON 데이터 로딩
         data = json.loads(request.body)
@@ -125,27 +126,27 @@ def classify_face_shape(img_path):
     return predicted_class, predictions_percent
 
 def styleresult_view(request):
-    try:
-        # 데이터베이스에서 가장 최근에 추가된 Faceshape 인스턴스를 가져옵니다.
-        latest_faceshape = Faceshape.objects.latest('faceshape_dt')
 
-        # MEDIA_ROOT를 사용하여 전체 파일 경로를 구성합니다.
+    try:
+        # 데이터베이스에서 가장 최근에 추가된 Faceshape 인스턴스를 가져온다.
+        latest_faceshape = Faceshape.objects.latest('faceshape_dt')
         img_path = os.path.join(settings.MEDIA_ROOT, str(latest_faceshape.faceshape_imgpath))
 
-        # 이미지 분류 함수를 호출합니다.
+        # 이미지 분류 함수를 호출
         predicted_class, predictions_percent = classify_face_shape(img_path)
 
-        # 분류 결과와 확률을 템플릿에 전달합니다.
+        # 해당 얼굴형에 맞는 헤어스타일을 Facerecorn 테이블에서 조회 (inner join)
+        recommended_hairstyles = Facerecorn.objects.filter(faceshape_result=predicted_class)
+
         context = {
             'face_shape': predicted_class,
-            'predictions_percent': predictions_percent
+            'predictions_percent': predictions_percent,
+            'recommended_hairstyles': recommended_hairstyles
         }
         return render(request, 'styleresult.html', context)
     except Faceshape.DoesNotExist:
-        # Faceshape 인스턴스가 없는 경우 오류 메시지와 함께 응답합니다.
         return JsonResponse({'status': 'fail', 'message': 'No face shape record found.'})
     except Exception as e:
-        # 기타 예외 처리
         return JsonResponse({'status': 'fail', 'message': str(e)})
 
 
