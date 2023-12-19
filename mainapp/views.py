@@ -174,12 +174,12 @@ def upload_scalp_image(request):
 
 
 # 모델 로딩
-dupi_model1 = load_model(os.path.join(settings.BASE_DIR, 'C:/Users/Cho/PycharmProjects/Final-Project/mainapp/models', 'dupi_model1.hdf5'))
-dupi_model2 = load_model(os.path.join(settings.BASE_DIR, 'C:/Users/Cho/PycharmProjects/Final-Project/mainapp/models', 'dupi_model2.hdf5'))
-dupi_model3 = load_model(os.path.join(settings.BASE_DIR, 'C:/Users/Cho/PycharmProjects/Final-Project/mainapp/models', 'dupi_model3.hdf5'))
-dupi_model4 = load_model(os.path.join(settings.BASE_DIR, 'C:/Users/Cho/PycharmProjects/Final-Project/mainapp/models', 'dupi_model4.hdf5'))
-dupi_model5 = load_model(os.path.join(settings.BASE_DIR, 'C:/Users/Cho/PycharmProjects/Final-Project/mainapp/models', 'dupi_model5.hdf5'))
-dupi_model6 = load_model(os.path.join(settings.BASE_DIR, 'C:/Users/Cho/PycharmProjects/Final-Project/mainapp/models', 'dupi_model6.hdf5'))
+dupi_model1 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'dupi_model1.hdf5'))
+dupi_model2 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'dupi_model2.hdf5'))
+dupi_model3 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'dupi_model3.hdf5'))
+dupi_model4 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'dupi_model4.hdf5'))
+dupi_model5 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'dupi_model5.hdf5'))
+dupi_model6 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'dupi_model6.hdf5'))
 
 # 이미지 분류 함수 정의
 def classify_scalp_type(img_path):
