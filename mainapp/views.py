@@ -14,7 +14,7 @@ from django.conf import settings
 import os
 
 # 모델을 불러옵니다. 이 경로는 실제 모델 파일의 위치를 반영해야 합니다.
-fmodel_path = os.path.join(settings.BASE_DIR, 'C:/work/pysou/makemeuppro/mainapp/models/', 'shape_vgg16.h5')
+fmodel_path = os.path.join(settings.BASE_DIR,'../Final-Project/mainapp/models', 'shape_vgg16.h5')
 fmodel = load_model(fmodel_path)
 def main(request):
     return render(request, 'index.html')
