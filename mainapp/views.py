@@ -232,3 +232,114 @@ def upload_scalp_image(request):
 
         return JsonResponse({'status': 'success', 'faceshape_id': new_scalp.scalp_id})
     return JsonResponse({'status': 'fail'})
+
+
+# 모델 로딩
+dupi_model1 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'dupi_model1.hdf5'))
+dupi_model2 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'dupi_model2.hdf5'))
+dupi_model3 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'dupi_model3.hdf5'))
+dupi_model4 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'dupi_model4.hdf5'))
+dupi_model5 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'dupi_model5.hdf5'))
+dupi_model6 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'dupi_model6.hdf5'))
+
+# 이미지 분류 함수 정의
+def classify_scalp_type(img_path):
+    img = load_img(img_path, target_size=(224, 224))
+    img_array = img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+    img_array /= 255.0
+
+    predictions = [dupi_model1.predict(img_array), dupi_model4.predict(img_array), dupi_model3.predict(img_array),
+                   dupi_model2.predict(img_array), dupi_model5.predict(img_array), dupi_model6.predict(img_array)]
+    class_names = [
+        ['모낭사이홍반 : 양호', '모낭사이홍반 : 경증', '모낭사이홍반 : 중등도', '모낭사이홍반 : 중증'],
+        ['비듬 : 양호', '비듬 : 경증', '비듬 : 중등도', '비듬 : 중증'],
+        ['미세각질 : 양호', '미세각질 : 경증', '미세각질 : 중등도', '미세각질 : 중증'],
+        ['모낭홍반농포 : 양호', '모낭홍반농포 : 경증', '모낭홍반농포 : 중등도', '모낭홍반농포 : 중증'],
+        ['탈모 : 양호', '탈모 : 경증', '탈모 : 중등도', '탈모 : 중증'],
+        ['피지과다 : 양호', '피지과다 : 경증', '피지과다 : 중등도', '피지과다 : 중증']
+    ]
+
+    results = {}
+    for i, (pred, names) in enumerate(zip(predictions, class_names), start=1):
+        predicted_class = np.argmax(pred)
+        predicted_class_name = names[predicted_class]
+        predictions_percent = pred[0] * 100
+        results[f'model{i}'] = {
+            'predicted_class_name': predicted_class_name,
+            'predictions_percent': predictions_percent.tolist(),
+            'predicted_class': predicted_class
+        }
+
+    # 이진 분류 결과 생성
+    result_model1 = 'Good' if results['model1']['predicted_class'] == 0 else 'Bad'
+    result_model2 = 'Good' if results['model2']['predicted_class'] == 0 else 'Bad'
+    result_model3 = 'Good' if results['model3']['predicted_class'] == 0 else 'Bad'
+    result_model4 = 'Good' if results['model4']['predicted_class'] == 0 else 'Bad'
+    result_model5 = 'Good' if results['model5']['predicted_class'] == 0 else 'Bad'
+    result_model6 = 'Good' if results['model6']['predicted_class'] == 0 else 'Bad'
+
+    # 이진 분류 결과에 따른 최종 결과 생성
+    if result_model1 == 'Good' and result_model2 == 'Good' and result_model3 == 'Good' and result_model4 == 'Good' and result_model5 == 'Good' and result_model6 == 'Good':
+        final_result = '양호'
+    elif result_model1 == 'Bad' and result_model2 == 'Good' and result_model3 == 'Good' and result_model4 == 'Good' and result_model5 == 'Good' and result_model6 == 'Good':
+        final_result = '건성'
+    elif result_model1 == 'Good' and result_model2 == 'Bad' and result_model3 == 'Good' and result_model4 == 'Good' and result_model5 == 'Good' and result_model6 == 'Good':
+        final_result = '지성'
+    elif result_model2 == 'Good' and result_model3 == 'Bad' and result_model4 == 'Good' and result_model5 == 'Good' and result_model6 == 'Good':
+        final_result = '민감성'
+    elif result_model2 == 'Bad' and result_model3 == 'Bad' and result_model4 == 'Good' and result_model6 == 'Good':
+        final_result = '지루성'
+    elif result_model3 == 'Good' and result_model4 == 'Bad' and result_model6 == 'Good':
+        final_result = '염증성'
+    elif result_model3 == 'Good' and result_model4 == 'Good' and result_model5 == 'Bad' and result_model6 == 'Good':
+        final_result = '비듬성'
+    elif result_model1 == 'Good' and result_model2 == 'Good' and result_model3 == 'Good' and result_model4 == 'Good' and result_model5 == 'Good' and result_model6 == 'Bad':
+        final_result = '탈모성'
+    else:
+        final_result = '복합성'
+
+    return results, final_result
+
+from django.shortcuts import render
+
+def hairlossresult_view(request):
+    # 데이터베이스에서 가장 최근에 추가된 Scalp 인스턴스를 가져옵니다.
+        latest_scalp = Scalp.objects.latest('scalp_dt')
+    #
+    #         # MEDIA_ROOT를 사용하여 전체 파일 경로를 구성합니다.
+        img_path = os.path.join(settings.MEDIA_ROOT, str(latest_scalp.scalp_imgpath))
+
+    # 이미지 분류 함수를 호출합니다.
+        classification_results, final_result = classify_scalp_type(img_path)
+
+    # 분류 결과와 최종 결과를 템플릿에 전달합니다.
+        context = {
+            'classification_results': classification_results,
+            'final_result': final_result,
+        }
+        return render(request, 'hairlossresult.html', context)
+
+# def hairlossresult_view(request):
+#     try:
+#         # 데이터베이스에서 가장 최근에 추가된 Scalp 인스턴스를 가져옵니다.
+#         latest_scalp = Scalp.objects.latest('scalp_dt')
+#
+#         # MEDIA_ROOT를 사용하여 전체 파일 경로를 구성합니다.
+#         img_path = os.path.join(settings.MEDIA_ROOT, str(latest_scalp.scalp_imgpath))
+#
+#         # 이미지 분류 함수를 호출합니다.
+#         predicted_class, predictions_percent = classify_scalp_image(img_path)
+#
+#         # 분류 결과와 확률을 템플릿에 전달합니다.
+#         context = {
+#             'scalp_condition': predicted_class,
+#             'predictions_percent': predictions_percent
+#         }
+#         return render(request, 'hairlossresult.html', context)
+#     except ObjectDoesNotExist:
+#         # Scalp 인스턴스가 없는 경우 오류 메시지와 함께 응답합니다.
+#         return JsonResponse({'status': 'fail', 'message': 'No scalp record found.'})
+#     except Exception as e:
+#         # 기타 예외 처리
+#         return JsonResponse({'status': 'fail', 'message': str(e)})
