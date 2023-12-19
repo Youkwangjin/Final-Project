@@ -1,24 +1,34 @@
 import os
 from pathlib import Path
+from django.conf import settings
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SECRET_KEY = os.getenv('SECRET_KEY')
+DEBUG = os.getenv('DEBUG') == 'True'
+# SECRET_KEY = 'django-insecure-^0&ah8tak4ds+)r)^iy)2e^rm6h$43!9mfsnm7f(neo+%'
+# DEBUG = True
+ALLOWED_HOSTS = ['13.125.130.244']
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
+# 로컬 환경에서 실행 시킬 때
+# FMODEL_PATH = 'C:/work/pysou/makemeuppro/mainapp/models/shape_vgg16.h5'
+# PMODEL_PATH = 'C:/work/pysou/makemeuppro/mainapp/models/personalcolor_ensemble1.h5'
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-^0&ah8tak4ds+)r)^iy)2e^rm6h$43!9mfsnm7f(neo+%#-4#h"
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if DEBUG:
+    # 로컬 환경 설정
+    # FMODEL_PATH = 'C:/work/pysou/makemeuppro/mainapp/models/shape_vgg16.h5'
+    PMODEL_PATH = 'C:/work/pysou/makemeuppro/mainapp/models/personalcolor_ensemble1.h5'
+else:
+    # Docker 환경 설정
+    # FMODEL_PATH = '/app/models/shape_vgg16.h5'
+    PMODEL_PATH = '/app/models/personalcolor_ensemble1.h5'
 
-ALLOWED_HOSTS = ["*"]
+# FMODEL_PATH = os.getenv('FMODEL_PATH', FMODEL_PATH)
+PMODEL_PATH = os.getenv('PMODEL_PATH', PMODEL_PATH)
 
 
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -59,28 +69,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "makemeuppro.wsgi.application"
 
-
-# Database
-# https://docs.djangoproject.com/en/dev/ref/settings/#databases
-
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "makemeupdb",
-        "USER": "root",
-        "PASSWORD": "seoho123",
-        "HOST": "127.0.0.1",
-        "PORT": "3306",
+        "ENGINE": os.getenv('SQL_ENGINE', 'django.db.backends.mysql'),
+        "NAME": os.getenv('SQL_DATABASE', 'makemeupdb'),
+        "USER": os.getenv('SQL_USER', 'root'),
+        "PASSWORD": os.getenv('SQL_PASSWORD', 'seoho123'),
+        "HOST": os.getenv('SQL_HOST', 'localhost'),
+        "PORT": os.getenv('SQL_PORT', '3306'),
     }
 }
 
 # 미디어 파일 설정 (사용자 업로드 파일)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-
-# Password validation
-# https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -97,30 +99,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/dev/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
-
-TIME_ZONE = "UTC"
-
+TIME_ZONE = 'Asia/Seoul'
 USE_I18N = True
-
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/dev/howto/static-files/
-
-STATIC_URL = "static/"
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/dev/ref/settings/#default-auto-field
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]

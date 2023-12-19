@@ -3,19 +3,28 @@ from django.core.files.storage import default_storage
 from django.shortcuts import render
 import json
 import base64
-import numpy as np
 from django.http import JsonResponse
 from .models import Personal, Faceshape, Scalp, Facerecorn
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
-from tensorflow.keras.models import load_model
-from django.conf import settings
+from keras.preprocessing.image import load_img, img_to_array
+from keras.models import load_model
 import os
+from PIL import Image
+import numpy as np
+import joblib
+import colorsys
+import dlib
+from sklearn.preprocessing import PolynomialFeatures
+from django.conf import settings
 
-# 모델을 불러옵니다. 이 경로는 실제 모델 파일의 위치를 반영해야 합니다.
-fmodel_path = os.path.join(settings.BASE_DIR, 'C:/work/pysou/makemeuppro/mainapp/models/', 'shape_vgg16.h5')
-fmodel = load_model(fmodel_path)
+# 서호 모델
+# fmodel = load_model(settings.FMODEL_PATH)
+
+# 민혁 모델
+pmodel = joblib.load(settings.PMODEL_PATH)
+
+
 def main(request):
     return render(request, 'index.html')
 
@@ -69,6 +78,60 @@ def upload_personal_image(request):
         return JsonResponse({'status': 'success', 'personal_id': new_personal.personal_id})
     return JsonResponse({'status': 'fail'})
 
+def classify_personal_color(img_path):
+    image = Image.open(img_path).convert('RGB')  # 이미지 로드 및 크기 조정
+    image_array = np.array(image)
+    print(image)
+    print('image_array : ', image_array)
+    # dlib 얼굴 검출기 초기화
+    detector = dlib.get_frontal_face_detector()
+
+    # 얼굴 위치 인식
+    face_locations = detector(image_array, 2)
+    print('face_locations : ', face_locations)
+    # 얼굴 영역 추출
+    if len(face_locations) > 0:
+        # 첫 번째 얼굴만 처리
+        top, right, bottom, left = (face_locations[0].top(), face_locations[0].right(),
+                                    face_locations[0].bottom(), face_locations[0].left())
+
+        # 얼굴 영역을 크롭
+        face_image = Image.fromarray(image_array[top:bottom, left:right])
+        print(face_image)
+        # 이미지 크기 조정 (모델에 맞게)
+        resized_face_image = face_image.resize((100, 100))
+        print(resized_face_image)
+
+        # 이미지를 배열로 변환
+        face_array = np.array(resized_face_image)
+
+        # 이미지의 평균 색상 계산 (RGB 값 사용)
+        average_color_rgb = np.mean(face_array, axis=(0, 1)).astype(int)
+
+        # RGB 값을 HSV로 변환
+        average_color_hsv = colorsys.rgb_to_hsv(*average_color_rgb / 255.0)
+
+        # RGB 값을 YCbCr로 변환
+        average_color_ycbcr = colorsys.rgb_to_yiq(*average_color_rgb / 255.0)
+
+        # 입력 데이터를 모델에 맞게 변환
+        X = np.concatenate([average_color_rgb, average_color_hsv, average_color_ycbcr], axis=0).reshape(1, -1)
+
+        # PolynomialFeatures를 사용하여 피처 확장
+        poly = PolynomialFeatures(degree=2, include_bias=False)
+        input_data = poly.fit_transform(X)
+
+        print(input_data)
+
+        # 모델 예측
+        classifier_personal_color = pmodel.predict(input_data)
+        print(classifier_personal_color)
+
+        # 예측 결과 출력
+        print(f"퍼스널 컬러 : {classifier_personal_color}")
+
+        return classifier_personal_color
+'''
 @csrf_exempt
 def upload_faceshape_image(request):
     # 사용자가 웹캠으로 캡처한 이미지를 서버에서 분석하고 결과를 저장
@@ -97,9 +160,10 @@ def upload_faceshape_image(request):
 
         return JsonResponse({'status': 'success', 'faceshape_id': new_faceshape.faceshape_id, 'faceshape_result': predicted_class})
     return JsonResponse({'status': 'fail'})
+'''
 
 
-
+'''
 # 이미지 로드 및 전처리(얼굴형)
 def classify_face_shape(img_path):
     img = load_img(img_path, target_size=(224, 224))  # 이미지 로드 및 크기 조정
@@ -126,7 +190,6 @@ def classify_face_shape(img_path):
     return predicted_class, predictions_percent
 
 def styleresult_view(request):
-
     try:
         # 데이터베이스에서 가장 최근에 추가된 Faceshape 인스턴스를 가져온다.
         latest_faceshape = Faceshape.objects.latest('faceshape_dt')
@@ -148,9 +211,7 @@ def styleresult_view(request):
         return JsonResponse({'status': 'fail', 'message': 'No face shape record found.'})
     except Exception as e:
         return JsonResponse({'status': 'fail', 'message': str(e)})
-
-
-
+'''
 @csrf_exempt
 def upload_scalp_image(request):
     if request.method == 'POST':
