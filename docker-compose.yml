@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    command: gunicorn makemeuppro.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/makemeuppro
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_DATABASE: '${SQL_DATABASE}'
+      MYSQL_USER: '${SQL_USER}'
+      MYSQL_PASSWORD: '${SQL_PASSWORD}'
+      MYSQL_ROOT_PASSWORD: '${SQL_PASSWORD}'
+    volumes:
+      - dbdata:/var/lib/mysql
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - static_volume:/makemeuppro/static
+      - media_volume:/makemeuppro/media
+    depends_on:
+      - web
+
+volumes:
+  dbdata:
+  static_volume:
+  media_volume:
