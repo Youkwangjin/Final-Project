@@ -1,7 +1,7 @@
 from django.urls import path
 
-from mainapp.views import main, personalcolor_view, style_view, hairloss_view, hairlossresult_view,personalcolorresult_view,styleresult_view
-
+# from mainapp.views import main, personalcolor_view, style_view, hairloss_view, hairlossresult_view,personalcolorresult_view,styleresult_view
+from mainapp.views import main, personalcolor_view, style_view, hairloss_view, hairlossresult_view, personalcolorresult_view, styleresult_view
 app_name = 'mainapp'
 
 urlpatterns = [
