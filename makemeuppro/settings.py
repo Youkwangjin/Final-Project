@@ -4,17 +4,17 @@ from django.conf import settings
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG = os.getenv('DEBUG') == 'True'
-# SECRET_KEY = 'django-insecure-^0&ah8tak4ds+)r)^iy)2e^rm6h$43!9mfsnm7f(neo+%'
-# DEBUG = True
-ALLOWED_HOSTS = ['13.125.130.244']
+# SECRET_KEY = os.getenv('SECRET_KEY')
+# DEBUG = os.getenv('DEBUG') == 'True'
+SECRET_KEY = 'django-insecure-^0&ah8tak4ds+)r)^iy)2e^rm6h$43!9mfsnm7f(neo+%'
+DEBUG = True
+ALLOWED_HOSTS = ['*']
 
 # 로컬 환경에서 실행 시킬 때
 # FMODEL_PATH = 'C:/work/pysou/makemeuppro/mainapp/models/shape_vgg16.h5'
-# PMODEL_PATH = 'C:/work/pysou/makemeuppro/mainapp/models/personalcolor_ensemble1.h5'
+PMODEL_PATH = 'C:/work/pysou/makemeuppro/mainapp/models/personalcolor_ensemble1.h5'
 
-
+'''
 if DEBUG:
     # 로컬 환경 설정
     # FMODEL_PATH = 'C:/work/pysou/makemeuppro/mainapp/models/shape_vgg16.h5'
@@ -26,7 +26,7 @@ else:
 
 # FMODEL_PATH = os.getenv('FMODEL_PATH', FMODEL_PATH)
 PMODEL_PATH = os.getenv('PMODEL_PATH', PMODEL_PATH)
-
+'''
 
 # Application definition
 INSTALLED_APPS = [
