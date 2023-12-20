@@ -1,7 +1,11 @@
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 
-# from mainapp.views import main, personalcolor_view, style_view, hairloss_view, hairlossresult_view,personalcolorresult_view,styleresult_view
-from mainapp.views import main, personalcolor_view, style_view, hairloss_view, hairlossresult_view, personalcolorresult_view, styleresult_view
+from mainapp.views import main, personalcolor_view, style_view, hairloss_view, hairlossresult_view
+from mainapp.views import personalcolorresult_view
+
+from mainapp.views import styleresult_view
 app_name = 'mainapp'
 
 urlpatterns = [
@@ -13,3 +17,7 @@ urlpatterns = [
     path('personalcolorresult_view/', personalcolorresult_view, name='personalcolorresult_view'),
     path('styleresult_view/', styleresult_view, name='styleresult_view'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
