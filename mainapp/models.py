@@ -81,3 +81,15 @@ class Scalprecorn(models.Model):
     class Meta:
         managed = False
         db_table = 'scalprecorn'
+
+class Personaldesc(models.Model):
+    personaldesc_id = models.AutoField(primary_key=True)
+    personal_result = models.CharField(max_length=20)
+    personal_resultimg = models.ImageField(upload_to='personaldesc/')
+    personal_info = models.CharField(max_length=255)
+    personal_paletteimg = models.ImageField(upload_to='palette/')
+    personal_makeupinfo = models.CharField(max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'personaldesc'
