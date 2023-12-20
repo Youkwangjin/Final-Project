@@ -4,7 +4,7 @@
 {% include "head.html" %}
 {% include "header.html" %}
 <style>
-    /* 사진 컨테이너 스타일 */
+    /* 사진 컨테이너 스타일! */
     #photo-container {
         display: flex;
         justify-content: center; /* 가로 중앙 정렬 */
@@ -185,7 +185,7 @@
             let height = graphHeights[i];
             graphElement.style.height = height + 'px';
 
-            // 동적 애니메이션 생성
+            // 동적 애니메이션 생성!
             let animationName = 'animate-height-' + i;
             let keyframes = `@keyframes ${animationName} { from { height: 0px; } to { height: ${height}px; } }`;
             document.styleSheets[0].insertRule(keyframes, 0);
