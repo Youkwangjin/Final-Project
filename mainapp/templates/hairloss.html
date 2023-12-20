@@ -4,46 +4,47 @@
 {% include "header.html" %}
 
 <body class="sub-background">
-    <section>
-        <div id="photo-upload-container" class="text-center">
-            <form id="upload-form" enctype="multipart/form-data">
-                <input type="file" id="photo-input" name="photo" accept="image/*" required>
-                <button type="submit" class="custom-btn btn-12"><span>업로드</span><span>업로드</span></button>
-            </form>
-            <img id="uploaded-photo" alt="업로드된 사진" hidden/>
-        </div>
-    </section>
+<br/><br/><br/><br/><br/>
+<setion>
+    <div id="photo-upload-container" class="text-center">
+        <form id="upload-form" enctype="multipart/form-data">
+            <input type="file" id="photo-input" name="photo" accept="image/*" required>
+            <button type="submit" class="custom-btn btn-12">
+                <span>업로드</span><span>사진올리기</span>
+            </button>
+        </form>
+        <img id="uploaded-photo" alt="업로드된 사진" hidden/>
+    </div>
+</setion>
+<script>
+    document.getElementById('upload-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        let file = document.getElementById('photo-input').files[0];
 
-    <script>
-        document.getElementById('upload-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    let file = document.getElementById('photo-input').files[0];
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = function () {
+            let base64String = reader.result;
+            localStorage.setItem('uploadedPhoto', base64String);
 
-    let reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = function() {
-        let base64String = reader.result;
-        localStorage.setItem('uploadedPhoto', base64String);
+            // 서버에 이미지 전송
+            let formData = new FormData();
+            formData.append('photo', file);
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', '/upload_scalp_image/', true);
+            xhr.send(formData);
 
-        // 서버에 이미지 전송
-        let formData = new FormData();
-        formData.append('photo', file);
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', '/upload_scalp_image/', true);
-        xhr.send(formData);
-
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                console.log('Photo upload successful:', xhr.responseText);
-                window.location.href = '{% url "mainapp:hairlossresult_view" %}'; // 페이지 이동
-            } else {
-                console.error('Photo upload failed:', xhr.statusText);
-            }
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    console.log('Photo upload successful:', xhr.responseText);
+                    window.location.href = '{% url "mainapp:hairlossresult_view" %}'; // 페이지 이동
+                } else {
+                    console.error('Photo upload failed:', xhr.statusText);
+                }
+            };
         };
-    };
-});
-    </script>
-
-    {% include "footer.html" %}
+    });
+</script>
+{% include "footer.html" %}
 </body>
 </html>

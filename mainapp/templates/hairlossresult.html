@@ -4,20 +4,142 @@
 {% include "header.html" %}
 
 <body class="sub-background">
-    <section>
-        <div id="hair-recommendation" class="text-center">
-            <img id="displayed-photo" alt="표시된 사진"/>
-        </div>
-    </section>
+<section>
+    <div id="hair-recommendation" class="text-center">
+        <img id="displayed-photo" alt="표시된 사진" style="max-width: 15%; max-height: 15%; margin-top: 2cm;"/>
 
-    {% include "footer.html" %}
-    <script>
+        <div id="classification-results">
+            <h2 style="font-size: 24px; margin-top: 1cm;">두피 진단 예측 결과</h2>
+            <table class="result-table">
+                <tr>
+                    {% for model, result in classification_results.items %}
+                        <td>
+                            <p>{{ result.predicted_class_name }}</p>
+                        </td>
+                        {% if forloop.counter|divisibleby:3 and not forloop.last %}
+                            </tr>
+                            <tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tr>
+            </table>
+        </div>
+
+        <div id="final-result" style="text-align: center;">
+            <table class="result-table">
+                <tr>
+                    <td>
+                        <p>두피 유형 : {{ final_result }}</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <br>
+        <!-- 추천 제품 표시 -->
+        <h2 style="font-size: 24px; margin-top: 1cm;">추천 제품</h2>
+        <div id="image-and-button">
+            {% for product in recommended_products %}
+            <table class="result-table2">
+                <tr>
+                    <td style="text-align: center;">
+                        <p>{{ product.scalprecorn_name }}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">
+                        <img src="{{ product.scalprecorn_imgpath.url }}" style="max-width: 50%; max-height: 50%;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">
+                        <a href="{{ product.scalprecorn_content }}" target="_blank"><span>바로가기</span></a>
+                    </td>
+                </tr>
+            </table>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% include "footer.html" %}
+<style>
+    .result-table {
+        width: 40%; /* 표의 크기를 조절 */
+        margin: 0 auto; /* 표를 가운데 정렬 */
+        border-collapse: collapse;
+    }
+
+    .result-table td {
+        width: 33.33%;
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .result-table2 {
+        width: 80%; /* 표의 크기를 조절 */
+        margin: 0 auto; /* 표를 가운데 정렬 */
+        border-collapse: collapse;
+    }
+
+    .result-table2 td {
+        width: 2%;
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .severe {
+        background-color: #ff2b2b;
+        color: white;
+    }
+
+    .good {
+        background-color: #4fff4f;
+        color: #0c0000;
+    }
+
+    .mild {
+        background-color: #f6de4a;
+        color: black;
+    }
+
+    .moderate {
+        background-color: #fa8726;
+        color: white;
+    }
+</style>
+
+<script>
     window.addEventListener('DOMContentLoaded', (event) => {
         let base64Image = localStorage.getItem('uploadedPhoto');
         if (base64Image) {
             document.getElementById('displayed-photo').src = base64Image;
         }
     });
+
+    // 예시: 진단 결과에 따라 클래스 할당
+    document.addEventListener('DOMContentLoaded', function() {
+    // 모든 테이블 셀(td) 요소 가져오기
+    const tableCells = document.querySelectorAll('#classification-results td');
+
+    tableCells.forEach((cell) => {
+        const resultText = cell.textContent.trim(); // 텍스트 내용 가져오기
+        let classToAdd = '';
+
+        // '양호', '경증', '중등도', '중증'에 따라 클래스 할당
+        if (resultText.includes('양호')) {
+            classToAdd = 'good';
+        } else if (resultText.includes('경증')) {
+            classToAdd = 'mild';
+        } else if (resultText.includes('중등도')) {
+            classToAdd = 'moderate';
+        } else if (resultText.includes('중증')) {
+            classToAdd = 'severe';
+        }
+
+        // 해당하는 클래스를 td 요소에 추가
+        cell.classList.add(classToAdd);
+    });
+});
 </script>
 
 </body>

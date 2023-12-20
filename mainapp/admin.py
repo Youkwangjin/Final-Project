@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import Facerecorn, Personalrecorn, Scalprecorn, Personaldesc
 
-# Register your models here.
+admin.site.register(Facerecorn)
+admin.site.register(Personalrecorn)
+admin.site.register(Scalprecorn)
+admin.site.register(Personaldesc)
