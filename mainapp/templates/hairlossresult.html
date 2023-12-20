@@ -35,54 +35,29 @@
             </table>
         </div>
         <br>
+        <!-- 추천 제품 표시 -->
         <h2 style="font-size: 24px; margin-top: 1cm;">추천 제품</h2>
         <div id="image-and-button">
+            {% for product in recommended_products %}
             <table class="result-table2">
                 <tr>
                     <td style="text-align: center;">
-                        <p>샴푸 추천 1</p>
-                    </td>
-                    <td style="text-align: center;">
-                        <p>샴푸 추천 2</p>
-                    </td>
-                    <td style="text-align: center;">
-                        <p>샴푸 추천 3</p>
-                    </td>
-                    <td style="text-align: center;">
-                        <p>샴푸 추천 4</p>
+                        <p>{{ product.scalprecorn_name }}</p>
                     </td>
                 </tr>
                 <tr>
                     <td style="text-align: center;">
-                        <img src="/static/image/add.jpg" style="max-width: 100%; max-height: 100%;">
-                    </td>
-                    <td style="text-align: center;">
-                        <img src="/static/image/add.jpg" style="max-width: 100%; max-height: 100%;">
-                    </td>
-                    <td style="text-align: center;">
-                        <img src="/static/image/add.jpg" style="max-width: 100%; max-height: 100%;">
-                    </td>
-                    <td style="text-align: center;">
-                        <img src="/static/image/add.jpg" style="max-width: 100%; max-height: 100%;">
+                        <img src="{{ product.scalprecorn_imgpath.url }}" style="max-width: 50%; max-height: 50%;">
                     </td>
                 </tr>
                 <tr>
                     <td style="text-align: center;">
-                        <a href="https://www.oliveyoung.co.kr/" target="_blank"><span>바로가기</span></a>
-                    </td>
-                    <td style="text-align: center;">
-                        <a href="https://www.oliveyoung.co.kr/" target="_blank"><span>바로가기</span></a>
-                    </td>
-                    <td style="text-align: center;">
-                        <a href="https://www.oliveyoung.co.kr/" target="_blank"><span>바로가기</span></a>
-                    </td>
-                    <td style="text-align: center;">
-                        <a href="https://www.oliveyoung.co.kr/" target="_blank"><span>바로가기</span></a>
+                        <a href="{{ product.scalprecorn_content }}" target="_blank"><span>바로가기</span></a>
                     </td>
                 </tr>
             </table>
+            {% endfor %}
         </div>
-
     </div>
 </section>
 

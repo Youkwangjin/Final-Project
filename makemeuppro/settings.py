@@ -11,20 +11,26 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 # 로컬 환경에서 실행 시킬 때
-# FMODEL_PATH = 'C:/work/pysou/makemeuppro/mainapp/models/shape_vgg16.h5'
-PMODEL_PATH = 'C:/work/pysou/makemeuppro/mainapp/models/personalcolor_ensemble1.h5'
+FMODEL_PATH = 'C:/work/pysou/makemeuppro/mainapp/models/shape_vgg16_process1.h5'
+PMODEL_PATH = 'C:/work/pysou/makemeuppro/mainapp/models/ensemble_soft_model_poly.h5'
+DMODEL_PATH1 = 'C:/work/pysou/makemeuppro/mainapp/models/aram_model1.hdf5'
+DMODEL_PATH2 = 'C:/work/pysou/makemeuppro/mainapp/models/aram_model2.hdf5'
+DMODEL_PATH3 = 'C:/work/pysou/makemeuppro/mainapp/models/aram_model3.hdf5'
+DMODEL_PATH4 = 'C:/work/pysou/makemeuppro/mainapp/models/aram_model4.hdf5'
+DMODEL_PATH5 = 'C:/work/pysou/makemeuppro/mainapp/models/aram_model5.hdf5'
+DMODEL_PATH6 = 'C:/work/pysou/makemeuppro/mainapp/models/aram_model6.hdf5'
 
 '''
 if DEBUG:
     # 로컬 환경 설정
-    # FMODEL_PATH = 'C:/work/pysou/makemeuppro/mainapp/models/shape_vgg16.h5'
-    PMODEL_PATH = 'C:/work/pysou/makemeuppro/mainapp/models/personalcolor_ensemble1.h5'
+    FMODEL_PATH = 'C:/work/pysou/makemeuppro/mainapp/models/shape_vgg16_process1.h5'
+    PMODEL_PATH = 'C:/work/pysou/makemeuppro/mainapp/models/ensemble_soft_model_poly.h5'
 else:
     # Docker 환경 설정
-    # FMODEL_PATH = '/app/models/shape_vgg16.h5'
+    FMODEL_PATH = '/app/models/shape_vgg16.h5'
     PMODEL_PATH = '/app/models/personalcolor_ensemble1.h5'
 
-# FMODEL_PATH = os.getenv('FMODEL_PATH', FMODEL_PATH)
+FMODEL_PATH = os.getenv('FMODEL_PATH', FMODEL_PATH)
 PMODEL_PATH = os.getenv('PMODEL_PATH', PMODEL_PATH)
 '''
 
@@ -84,6 +90,10 @@ DATABASES = {
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -103,9 +113,5 @@ LANGUAGE_CODE = "en-us"
 TIME_ZONE = 'Asia/Seoul'
 USE_I18N = True
 USE_TZ = True
-
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [BASE_DIR / "static"]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
