@@ -19,20 +19,44 @@ from django.conf import settings
 from django.shortcuts import render
 
 # 서호 모델
-fmodel = load_model(settings.FMODEL_PATH)
+fmodel_path = os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models','shape_vgg16_process1.h5')
+fmodel = load_model(fmodel_path)
 
 # 민혁 모델
-pmodel = joblib.load(settings.PMODEL_PATH)
+pmodel_path = os.path.join(settings.BASE_DIR,'../Final-Project/mainapp/models', 'ensemble_soft_model_poly.h5')
+pmodel = joblib.load(pmodel_path)
 
 # 혁진 모델
-dupi_model1 = load_model(settings.DMODEL_PATH1)
-dupi_model2 = load_model(settings.DMODEL_PATH2)
-dupi_model3 = load_model(settings.DMODEL_PATH3)
-dupi_model4 = load_model(settings.DMODEL_PATH4)
-dupi_model5 = load_model(settings.DMODEL_PATH5)
-dupi_model6 = load_model(settings.DMODEL_PATH6)
+dupi_model1 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models/', 'scalp_model1.hdf5'))
+dupi_model2 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models/', 'scalp_model2.hdf5'))
+dupi_model3 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models/', 'scalp_model3.hdf5'))
+dupi_model4 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models/', 'scalp_model4.hdf5'))
+dupi_model5 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models/', 'scalp_model5.hdf5'))
+dupi_model6 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models/', 'scalp_model6.hdf5'))
 
-
+# # 로컬 환경에서 실행 시킬 때
+# FMODEL_PATH = 'C:/work/Final-Project/mainapp/models/shape_vgg16_process1.h5'
+# PMODEL_PATH = 'C:/work/pysou/makemeuppro/mainapp/models/ensemble_soft_model_poly.h5'
+# DMODEL_PATH1 = 'C:/work/pysou/makemeuppro/mainapp/models/aram_model1.hdf5'
+# DMODEL_PATH2 = 'C:/work/pysou/makemeuppro/mainapp/models/aram_model2.hdf5'
+# DMODEL_PATH3 = 'C:/work/pysou/makemeuppro/mainapp/models/aram_model3.hdf5'
+# DMODEL_PATH4 = 'C:/work/pysou/makemeuppro/mainapp/models/aram_model4.hdf5'
+# DMODEL_PATH5 = 'C:/work/pysou/makemeuppro/mainapp/models/aram_model5.hdf5'
+# DMODEL_PATH6 = 'C:/work/pysou/makemeuppro/mainapp/models/aram_model6.hdf5'
+#
+# # 서호 모델
+# fmodel = load_model(settings.FMODEL_PATH)
+#
+# # 민혁 모델
+# pmodel = joblib.load(settings.PMODEL_PATH)
+#
+# # 혁진 모델
+# dupi_model1 = load_model(settings.DMODEL_PATH1)
+# dupi_model2 = load_model(settings.DMODEL_PATH2)
+# dupi_model3 = load_model(settings.DMODEL_PATH3)
+# dupi_model4 = load_model(settings.DMODEL_PATH4)
+# dupi_model5 = load_model(settings.DMODEL_PATH5)
+# dupi_model6 = load_model(settings.DMODEL_PATH6)
 def main(request):
     return render(request, 'index.html')
 
@@ -80,7 +104,7 @@ def upload_personal_image(request):
     return JsonResponse({'status': 'fail'})
 
 
-# 이미지 로드 및 전처리 
+# 이미지 로드 및 전처리
 def classify_personal_color(img_path):
     image = Image.open(img_path).convert('RGB')  # 이미지 로드 및 크기 조정
     image_array = np.array(image)
@@ -208,13 +232,14 @@ def upload_faceshape_image(request):
     return JsonResponse({'status': 'fail'})
 
 # 이미지 로드 및 전처리(얼굴형)
+'''
 def classify_face_shape(img_path):
     img = load_img(img_path, target_size=(224, 224))  # 이미지 로드 및 크기 조정
     img_array = img_to_array(img)  # 이미지를 배열로 변환
     img_array = np.expand_dims(img_array, axis=0)  # 행 방향으로 차원 확대
     # 이미지를 분류하고 결과를 반환합니다.
     predictions = fmodel.predict(img_array)
-    predictions = fmodel.predict(img_array)
+
     print('Predictions:', predictions)  # 변환된 이미지의 배열값을 확인
     # 각 클래스에 대한 예측 확률을 백분율로 변환하고 정수로 변환합니다.
     predictions_percent = [int(value * 100) for value in predictions[0]]
@@ -231,8 +256,75 @@ def classify_face_shape(img_path):
 
     # 예측된 각 클래스의 확률과 가장 높은 확률을 가진 클래스를 반환합니다.
     return predicted_class, predictions_percent
+'''
+# 얼굴 형태 분류 함수 (위에서 제공된 함수)
+def classify_face_shape(img_path):
+    detector = dlib.get_frontal_face_detector()
+
+    # load_img를 이용해 이미지를 PIL 형식으로 로드합니다.
+    img = load_img(img_path)
+    img = img.resize((224, 224))  # 이미지 크기 조정
+
+    # PIL 이미지를 NumPy 배열로 변환
+    img_array = img_to_array(img)
+
+    # NumPy 배열을 uint8 타입으로 변환 (dlib 처리를 위해)
+    img_array = img_array.astype('uint8')
+
+    # 얼굴 감지
+    faces = detector(img_array, 1)  # 두 번째 인자로 이미지의 업샘플링 횟수 지정
+    if len(faces) == 0:
+        print("얼굴을 감지하지 못했습니다.")
+        return None, None
+
+    # 첫 번째 감지된 얼굴을 사용합니다 (여러 얼굴이 있는 경우)
+    face = faces[0]
+
+    # 얼굴 영역을 기반으로 이미지를 crop합니다.
+    cropped_img = img_array[face.top():face.bottom(), face.left():face.right()]
+
+    # PIL 이미지로 변환
+    pil_image = Image.fromarray(cropped_img)
+    pil_image = pil_image.resize((224, 224))
+
+    # 이미지를 배열로 변환 및 차원 확대
+    img_array = img_to_array(pil_image)
+    # img_array = img_array / 255.0
+    img_array = np.expand_dims(img_array, axis=0)
+
+    # 이미지 분류 및 결과 반환
+    predictions = fmodel.predict(img_array)
 
 
+    predictions_percent = [int(value * 100) for value in predictions[0]]
+    print('predictions_percent : ', predictions_percent)
+    predicted_index = np.argmax(predictions, axis=1)
+    print('predicted_index : ', predicted_index)
+
+    class_names = ['하트형', '직사각형', '계란형', '둥근형', '사각형']
+    predicted_class = class_names[predicted_index[0]]
+
+    return predicted_class, predictions_percent
+"""
+# -----
+import matplotlib.pyplot as plt
+# 이미지 경로 설정
+# img_path = 'C:/Users/SEOHO/Desktop/egg.jpg'
+img_path = 'C:/Users/SEOHO/Desktop/취업/이력서사진.jpg'
+img = Image.open(img_path)
+
+# 이미지 표시
+plt.imshow(img)
+plt.axis('off')  # 축 정보 끄기
+plt.show()
+# 함수 실행
+predicted_class, predictions_percent = classify_face_shape(img_path)
+
+# 결과 출력
+print("Predicted Class:", predicted_class)
+print("Prediction Percentages:", predictions_percent)
+# ---
+"""
 def styleresult_view(request):
     try:
         # 데이터베이스에서 가장 최근에 추가된 Faceshape 인스턴스를 가져온다.
@@ -314,12 +406,12 @@ def classify_scalp_type(img_path):
         }
 
     # 이진 분류 결과 생성
-    result_model1 = 'Good' if results['model1']['predicted_class'] == 0 else 'Bad'
-    result_model2 = 'Good' if results['model2']['predicted_class'] == 0 else 'Bad'
-    result_model3 = 'Good' if results['model3']['predicted_class'] == 0 else 'Bad'
-    result_model4 = 'Good' if results['model4']['predicted_class'] == 0 else 'Bad'
-    result_model5 = 'Good' if results['model5']['predicted_class'] == 0 else 'Bad'
-    result_model6 = 'Good' if results['model6']['predicted_class'] == 0 else 'Bad'
+    result_model1 = 'Good' if results['model1']['predicted_class'] == 0 or results['model1']['predicted_class'] == 1 else 'Bad'
+    result_model2 = 'Good' if results['model2']['predicted_class'] == 0 or results['model2']['predicted_class'] == 1 else 'Bad'
+    result_model3 = 'Good' if results['model3']['predicted_class'] == 0 or results['model3']['predicted_class'] == 1 else 'Bad'
+    result_model4 = 'Good' if results['model4']['predicted_class'] == 0 or results['model4']['predicted_class'] == 1 else 'Bad'
+    result_model5 = 'Good' if results['model5']['predicted_class'] == 0 or results['model5']['predicted_class'] == 1 else 'Bad'
+    result_model6 = 'Good' if results['model6']['predicted_class'] == 0 or results['model6']['predicted_class'] == 1 else 'Bad'
 
     # 이진 분류 결과에 따른 최종 결과 생성
     if result_model1 == 'Good' and result_model2 == 'Good' and result_model3 == 'Good' and result_model4 == 'Good' and result_model5 == 'Good' and result_model6 == 'Good':
@@ -371,4 +463,3 @@ def hairlossresult_view(request):
         'recommended_products': recommended_products,
     }
     return render(request, 'hairlossresult.html', context)
-
