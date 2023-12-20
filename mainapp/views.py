@@ -19,18 +19,31 @@ from django.conf import settings
 from django.shortcuts import render
 
 # 서호 모델
-fmodel = load_model(settings.FMODEL_PATH)
+fmodel_path = os.path.join(settings.BASE_DIR,'C:/work/Final-Project/mainapp/models', 'shape_vgg16.h5')
+fmodel = load_model(fmodel_path)
 
 # 민혁 모델
-pmodel = joblib.load(settings.PMODEL_PATH)
+pmodel_path = os.path.join(settings.BASE_DIR,'C:/work/Final-Project/mainapp/models', 'ensemble_soft_model_poly.h5')
+pmodel = joblib.load(pmodel_path)
 
 # 혁진 모델
-dupi_model1 = load_model(settings.DMODEL_PATH1)
-dupi_model2 = load_model(settings.DMODEL_PATH2)
-dupi_model3 = load_model(settings.DMODEL_PATH3)
-dupi_model4 = load_model(settings.DMODEL_PATH4)
-dupi_model5 = load_model(settings.DMODEL_PATH5)
-dupi_model6 = load_model(settings.DMODEL_PATH6)
+dupi_model1_path = os.path.join(settings.BASE_DIR,'C:/work/Final-Project/mainapp/models', 'scalp_model1.hdf5')
+dupi_model1 = load_model(dupi_model1_path)
+
+dupi_model2_path = os.path.join(settings.BASE_DIR,'C:/work/Final-Project/mainapp/models', 'scalp_model2.hdf5')
+dupi_model2 = load_model(dupi_model2_path)
+
+dupi_model3_path = os.path.join(settings.BASE_DIR,'C:/work/Final-Project/mainapp/models', 'scalp_model3.hdf5')
+dupi_model3 = load_model(dupi_model3_path)
+
+dupi_model4_path = os.path.join(settings.BASE_DIR,'C:/work/Final-Project/mainapp/models', 'scalp_model4.hdf5')
+dupi_model4 = load_model(dupi_model4_path)
+
+dupi_model5_path = os.path.join(settings.BASE_DIR,'C:/work/Final-Project/mainapp/models', 'scalp_model5.hdf5')
+dupi_model5 = load_model(dupi_model5_path)
+
+dupi_model6_path = os.path.join(settings.BASE_DIR,'C:/work/Final-Project/mainapp/models', 'scalp_model6.hdf5')
+dupi_model6 = load_model(dupi_model6_path)
 
 
 def main(request):
