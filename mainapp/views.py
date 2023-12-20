@@ -1,17 +1,36 @@
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
-from django.shortcuts import render
 import json
 import base64
-import numpy as np
 from django.http import JsonResponse
-from .models import Personal, Faceshape, Scalp, Facerecorn
+from .models import Personal, Faceshape, Scalp, Facerecorn, Scalprecorn, Personalrecorn, Personaldesc
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
-from tensorflow.keras.models import load_model
-from django.conf import settings
+from keras.preprocessing.image import load_img, img_to_array
+from keras.models import load_model
 import os
+from PIL import Image
+import numpy as np
+import joblib
+import colorsys
+import dlib
+from sklearn.preprocessing import PolynomialFeatures
+from django.conf import settings
+from django.shortcuts import render
+
+# 서호 모델
+fmodel = load_model(settings.FMODEL_PATH)
+
+# 민혁 모델
+pmodel = joblib.load(settings.PMODEL_PATH)
+
+# 혁진 모델
+dupi_model1 = load_model(settings.DMODEL_PATH1)
+dupi_model2 = load_model(settings.DMODEL_PATH2)
+dupi_model3 = load_model(settings.DMODEL_PATH3)
+dupi_model4 = load_model(settings.DMODEL_PATH4)
+dupi_model5 = load_model(settings.DMODEL_PATH5)
+dupi_model6 = load_model(settings.DMODEL_PATH6)
 
 # 모델을 불러옵니다. 이 경로는 실제 모델 파일의 위치를 반영해야 합니다.
 fmodel_path = os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'shape_vgg16.h5')
@@ -19,32 +38,20 @@ fmodel = load_model(fmodel_path)
 def main(request):
     return render(request, 'index.html')
 
+
 def personalcolor_view(request):
     # Your view logic goes here
     return render(request, 'personalcolor.html')
+
 
 def style_view(request):
     # Your view logic goes here
     return render(request, 'style.html')
 
+
 def hairloss_view(request):
     # Your view logic goes here
     return render(request, 'hairloss.html')
-
-def hairlossresult_view(request):
-    # Your view logic goes here
-    return render(request, 'hairlossresult.html')
-
-def personalcolorresult_view(request):
-    # Your view logic goes here
-    # 모델 함수 여기다가
-    # 원 function으로... 분류결과를 db에 넣어야함.
-    return render(request, 'personalcolorresult.html')
-
-# def styleresult_view(request):
-#     # Your view logic goes here
-#     return render(request, 'styleresult.html')
-
 
 @csrf_exempt
 def upload_personal_image(request):
@@ -58,16 +65,119 @@ def upload_personal_image(request):
         # 이미지 데이터를 ContentFile로 변환
         image_file = ContentFile(base64.b64decode(imgstr), name='personal.' + ext)
 
-        # Personal 모델 인스턴스 생성 및 저장
+        # Personal 모델 인스턴스 생성
         new_personal = Personal(
-            personal_result=data.get('personal_result', ''),  # 내용, 없다면 빈 문자열
-            personal_imgpath=image_file,
-            personal_dt=timezone.now(),
+            personal_imgpath=image_file,  # 이미지 파일
+            personal_dt=timezone.now(),  # 등록일자, 현재 시간으로 설정
         )
+        new_personal.save()
+
+        # 이미지 분석 및 DB 업데이트
+        classifier_personal_color = classify_personal_color(new_personal.personal_imgpath)
+        personal_color_string = get_personal_color_string(classifier_personal_color)
+        new_personal.personal_result = personal_color_string
         new_personal.save()
 
         return JsonResponse({'status': 'success', 'personal_id': new_personal.personal_id})
     return JsonResponse({'status': 'fail'})
+
+
+# 이미지 로드 및 전처리
+def classify_personal_color(img_path):
+    image = Image.open(img_path).convert('RGB')  # 이미지 로드 및 크기 조정
+    image_array = np.array(image)
+
+    # dlib 얼굴 검출기 초기화
+    detector = dlib.get_frontal_face_detector()
+
+    # 얼굴 위치 인식
+    face_locations = detector(image_array, 2)
+    # 얼굴 영역 추출
+    if len(face_locations) > 0:
+        # 첫 번째 얼굴만 처리
+        top, right, bottom, left = (face_locations[0].top(), face_locations[0].right(),
+                                    face_locations[0].bottom(), face_locations[0].left())
+
+        # 얼굴 영역을 크롭
+        face_image = Image.fromarray(image_array[top:bottom, left:right])
+        # print(face_image)
+        # 이미지 크기 조정 (모델에 맞게)
+        resized_face_image = face_image.resize((100, 100))
+        # print(resized_face_image)
+
+        # 이미지를 배열로 변환
+        face_array = np.array(resized_face_image)
+
+        # 이미지의 평균 색상 계산 (RGB 값 사용)
+        average_color_rgb = np.mean(face_array, axis=(0, 1)).astype(int)
+        scaled_rgb = average_color_rgb / 255.0
+
+        # RGB 값을 HSV로 변환
+        average_color_hsv = colorsys.rgb_to_hsv(*scaled_rgb)
+
+        # RGB 값을 YCbCr로 변환
+        average_color_ycbcr = colorsys.rgb_to_yiq(*scaled_rgb)
+
+        # 입력 데이터를 모델에 맞게 변환
+        X = np.concatenate([scaled_rgb, average_color_hsv, average_color_ycbcr], axis=0).reshape(1, -1)
+
+        # PolynomialFeatures를 사용하여 피처 확장
+        poly = PolynomialFeatures(degree=2, include_bias=False)
+        input_data = poly.fit_transform(X)
+
+        # print(input_data)
+
+        # 모델 예측
+        classifier_personal_color = pmodel.predict(input_data)
+        return classifier_personal_color  # 최종 반환값
+    else:
+        print("이미지에서 얼굴을 찾을 수 없습니다.")
+
+def get_personal_color_string(classifier_personal_color):
+    personal_color_string = ''
+    if classifier_personal_color[0] == 0:
+        personal_color_string = '봄웜'
+    elif classifier_personal_color[0] == 1:
+        personal_color_string = '여름쿨'
+    elif classifier_personal_color[0] == 2:
+        personal_color_string = '가을웜'
+    elif classifier_personal_color[0] == 3:
+        personal_color_string = '겨울쿨'
+    # 최종 반환 값
+    return personal_color_string
+
+# 결과 출력
+def personalcolorresult_view(request):
+    try:
+        # 데이터베이스에서 가장 최근에 추가된 Personal 인스턴스를 가져옵니다.
+        latest_personal = Personal.objects.latest('personal_dt')
+
+        # Personal 모델에서 personal_color 값을 가져옵니다.
+        personal_color = latest_personal.personal_result
+
+        # Personalrecorn 모델에서 상품 추천 목록을 가져옵니다.
+        product_recommendations = Personalrecorn.objects.filter(personal_result=personal_color)
+
+        # Personaldesc 모델에서 매핑
+        personaldesc_data_list = Personaldesc.objects.filter(personal_result=personal_color)
+
+        # 템플릿에 결과 데이터 전달
+        context = {
+            'captured_photo_url': latest_personal.personal_imgpath.url,
+            'personal_color': personal_color,
+            'product_recommendations': product_recommendations,
+            'personaldesc_data_list': personaldesc_data_list,  # 모든 Personaldesc 레코드를 전달합니다.
+        }
+
+        return render(request, 'personalcolorresult.html', context)
+    except Personal.DoesNotExist:
+        # Personal 인스턴스가 없는 경우 오류 메시지와 함께 응답합니다.
+        return JsonResponse({'status': 'fail', 'message': 'No personal record found.'})
+    except Exception as e:
+        # 기타 예외 처리
+        return JsonResponse({'status': 'fail', 'message': str(e)})
+
+
 
 @csrf_exempt
 def upload_faceshape_image(request):
@@ -95,7 +205,8 @@ def upload_faceshape_image(request):
         )
         new_faceshape.save()
 
-        return JsonResponse({'status': 'success', 'faceshape_id': new_faceshape.faceshape_id, 'faceshape_result': predicted_class})
+        return JsonResponse(
+            {'status': 'success', 'faceshape_id': new_faceshape.faceshape_id, 'faceshape_result': predicted_class})
     return JsonResponse({'status': 'fail'})
 '''
 import dlib
@@ -175,8 +286,8 @@ def classify_face_shape(img_path):
     # 예측된 각 클래스의 확률과 가장 높은 확률을 가진 클래스를 반환합니다.
     return predicted_class, predictions_percent
 
-def styleresult_view(request):
 
+def styleresult_view(request):
     try:
         # 데이터베이스에서 가장 최근에 추가된 Faceshape 인스턴스를 가져온다.
         latest_faceshape = Faceshape.objects.latest('faceshape_dt')
@@ -200,38 +311,34 @@ def styleresult_view(request):
         return JsonResponse({'status': 'fail', 'message': str(e)})
 
 
-
 @csrf_exempt
 def upload_scalp_image(request):
     if request.method == 'POST':
         if 'photo' in request.FILES:
             photo = request.FILES['photo']
 
-            # 이미지 파일 처리
-            # 파일 확장자를 추출합니다 (예: 'jpg', 'png' 등)
+            # 이미지 파일 처리 및 Scalp 모델 인스턴스 생성
             ext = photo.name.split('.')[-1]
-
-            # Faceshape 모델 인스턴스 생성 및 저장
             new_scalp = Scalp(
-                scalp_imgpath=photo,  # 업로드된 이미지 파일
-                scalp_dt=timezone.now(),  # 등록일자, 현재 시간으로 설정
-                # 기타 필요한 필드들을 추가
+                scalp_imgpath=photo,
+                scalp_dt=timezone.now(),
             )
+
+            # 이미지 저장
             new_scalp.save()
 
-        return JsonResponse({'status': 'success', 'faceshape_id': new_scalp.scalp_id})
+            # 이미지 경로를 classify_scalp_type 함수에 전달하여 두피 유형 분류
+            _, final_result = classify_scalp_type(new_scalp.scalp_imgpath.path)
+
+            # final_result를 Scalp 인스턴스의 scalp_result 필드에 저장
+            new_scalp.scalp_result = final_result
+            new_scalp.save()
+
+            return JsonResponse({'status': 'success', 'scalp_id': new_scalp.scalp_id, 'scalp_result': final_result})
     return JsonResponse({'status': 'fail'})
 
 
-# 모델 로딩
-dupi_model1 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'dupi_model1.hdf5'))
-dupi_model2 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'dupi_model2.hdf5'))
-dupi_model3 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'dupi_model3.hdf5'))
-dupi_model4 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'dupi_model4.hdf5'))
-dupi_model5 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'dupi_model5.hdf5'))
-dupi_model6 = load_model(os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'dupi_model6.hdf5'))
-
-# 이미지 분류 함수 정의
+# 이미지 분류 함수 정의 (데이터 분류 및 결과를 출력하는 함수)
 def classify_scalp_type(img_path):
     img = load_img(img_path, target_size=(224, 224))
     img_array = img_to_array(img)
@@ -290,45 +397,32 @@ def classify_scalp_type(img_path):
 
     return results, final_result
 
-from django.shortcuts import render
 
 def hairlossresult_view(request):
     # 데이터베이스에서 가장 최근에 추가된 Scalp 인스턴스를 가져옵니다.
-        latest_scalp = Scalp.objects.latest('scalp_dt')
-    #
-    #         # MEDIA_ROOT를 사용하여 전체 파일 경로를 구성합니다.
-        img_path = os.path.join(settings.MEDIA_ROOT, str(latest_scalp.scalp_imgpath))
+    latest_scalp = Scalp.objects.latest('scalp_dt')
+
+    # MEDIA_ROOT를 사용하여 전체 파일 경로를 구성합니다.
+    img_path = os.path.join(settings.MEDIA_ROOT, str(latest_scalp.scalp_imgpath))
 
     # 이미지 분류 함수를 호출합니다.
-        classification_results, final_result = classify_scalp_type(img_path)
+    classification_results, final_result = classify_scalp_type(img_path)
 
-    # 분류 결과와 최종 결과를 템플릿에 전달합니다.
-        context = {
-            'classification_results': classification_results,
-            'final_result': final_result,
-        }
-        return render(request, 'hairlossresult.html', context)
+    # 공백을 제거
+    final_result = final_result.strip()
 
-# def hairlossresult_view(request):
-#     try:
-#         # 데이터베이스에서 가장 최근에 추가된 Scalp 인스턴스를 가져옵니다.
-#         latest_scalp = Scalp.objects.latest('scalp_dt')
-#
-#         # MEDIA_ROOT를 사용하여 전체 파일 경로를 구성합니다.
-#         img_path = os.path.join(settings.MEDIA_ROOT, str(latest_scalp.scalp_imgpath))
-#
-#         # 이미지 분류 함수를 호출합니다.
-#         predicted_class, predictions_percent = classify_scalp_image(img_path)
-#
-#         # 분류 결과와 확률을 템플릿에 전달합니다.
-#         context = {
-#             'scalp_condition': predicted_class,
-#             'predictions_percent': predictions_percent
-#         }
-#         return render(request, 'hairlossresult.html', context)
-#     except ObjectDoesNotExist:
-#         # Scalp 인스턴스가 없는 경우 오류 메시지와 함께 응답합니다.
-#         return JsonResponse({'status': 'fail', 'message': 'No scalp record found.'})
-#     except Exception as e:
-#         # 기타 예외 처리
-#         return JsonResponse({'status': 'fail', 'message': str(e)})
+    # 데이터베이스에서 분류 결과에 해당하는 추천 제품들을 조회
+    recommended_products = Scalprecorn.objects.filter(scalp_result=final_result)
+
+    # scalprecorn_content에서 특수 문자를 제거
+    for item in recommended_products:
+        item.scalprecorn_content = item.scalprecorn_content.strip('\ufeff')
+
+    # 분류 결과, 최종 결과, 추천 제품들을 템플릿에 전달
+    context = {
+        'classification_results': classification_results,
+        'final_result': final_result,
+        'recommended_products': recommended_products,
+    }
+    return render(request, 'hairlossresult.html', context)
+
