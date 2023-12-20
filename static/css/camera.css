@@ -24,7 +24,7 @@
     left: 10px;
     width: 470px;
     height: 300px;
-    margin: 0px auto 0;
+    margin: 0 auto 0;
     border-bottom: 3px solid #aaa;
     text-align: center;
 }
@@ -37,7 +37,7 @@
 }
 
 .graphWrap .graph > div#item1 {
-    left: 0px;
+    left: 0;
     background: #b9fc76;
 }
 

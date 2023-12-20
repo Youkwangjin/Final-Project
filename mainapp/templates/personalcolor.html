@@ -37,7 +37,6 @@
                 xhr.onload = function() {
                     if (xhr.status === 200) {
                         console.log('Image upload successful:', xhr.responseText);
-                        // 추가로, 사용자에게 성공 메시지를 보여주거나 새로운 페이지로 리다이렉션할 수 있다.
                     } else {
                         console.error('Image upload failed:', xhr.statusText);
                     }
