@@ -24,5 +24,32 @@
         document.getElementById('captured-photo').src = capturedPhotoData;
     }
 </script>
+{% if personal_color %}
+    <p>퍼스널 컬러 : {{ personal_color }}</p>
+    {% if result_image_path %}
+        <img src="{{ result_image_path }}" alt="Personal Color Result" style="width: 300px; height: auto;">
+    {% else %}
+        <p>퍼스널 컬러에 해당하는 이미지를 찾을 수 없습니다.</p>
+    {% endif %}
+    {% if result_image_path_lip %}
+        <img src="{{ result_image_path_lip }}" alt="Personal Color Product Lip" style="width: 300px; height: auto;">
+    {% else %}
+        <p>퍼스널 컬러에 해당하는 이미지를 찾을 수 없습니다.</p>
+    {% endif %}
+    {% if result_image_path_eye %}
+        <img src="{{ result_image_path_eye }}" alt="Personal Color Product Eye" style="width: 300px; height: auto;">
+    {% else %}
+        <p>퍼스널 컬러에 해당하는 이미지를 찾을 수 없습니다.</p>
+    {% endif %}
+    {% if result_image_path_blur %}
+        <img src="{{ result_image_path_blur }}" alt="Personal Color Product Blur" style="width: 300px; height: auto;">
+    {% else %}
+        <p>퍼스널 컬러에 해당하는 이미지를 찾을 수 없습니다.</p>
+    {% endif %}
+{% else %}
+    <p>퍼스널 컬러를 분류할 수 없습니다.</p>
+{% endif %}
+    <h1>퍼스널 컬러 분류 결과</h1>
+    <p>예측된 퍼스널 컬러: {{ personal_color }}</p>
 </body>
 </html>

@@ -12,10 +12,13 @@ from keras.preprocessing.image import load_img, img_to_array
 from keras.models import load_model
 from django.conf import settings
 import os
+import joblib
 
 # 모델을 불러옵니다. 이 경로는 실제 모델 파일의 위치를 반영해야 합니다.
 fmodel_path = os.path.join(settings.BASE_DIR, '../Final-Project/mainapp/models', 'shape_vgg16.h5')
 fmodel = load_model(fmodel_path)
+pmodel_path = os.path.join(settings.BASE_DIR,'../Final-Project/mainapp/models', 'ensemble_soft_model_poly.h5')
+pmodel = joblib.load(pmodel_path)
 def main(request):
     return render(request, 'index.html')
 
@@ -35,16 +38,6 @@ def hairlossresult_view(request):
     # Your view logic goes here
     return render(request, 'hairlossresult.html')
 
-def personalcolorresult_view(request):
-    # Your view logic goes here
-    # 모델 함수 여기다가
-    # 원 function으로... 분류결과를 db에 넣어야함.
-    return render(request, 'personalcolorresult.html')
-
-# def styleresult_view(request):
-#     # Your view logic goes here
-#     return render(request, 'styleresult.html')
-
 
 @csrf_exempt
 def upload_personal_image(request):
@@ -61,13 +54,157 @@ def upload_personal_image(request):
         # Personal 모델 인스턴스 생성 및 저장
         new_personal = Personal(
             personal_result=data.get('personal_result', ''),  # 내용, 없다면 빈 문자열
-            personal_imgpath=image_file,
-            personal_dt=timezone.now(),
+            personal_imgpath=image_file,  # 이미지 파일
+            personal_dt=timezone.now(),  # 등록일자, 현재 시간으로 설정
+            # personal_id는 자동 증가 필드로 가정, 필요하다면 명시적으로 설정
+            # personal_content=data.get('personal_content', None)  # 내용, null 허용 필드
         )
         new_personal.save()
 
         return JsonResponse({'status': 'success', 'personal_id': new_personal.personal_id})
     return JsonResponse({'status': 'fail'})
+
+from PIL import Image
+import colorsys
+import dlib
+from sklearn.preprocessing import PolynomialFeatures
+
+
+def classify_personal_color(img_path):
+    image = Image.open(img_path).convert('RGB')  # 이미지 로드 및 크기 조정
+    image_array = np.array(image)
+    print(image)
+    print('image_array : ', image_array)
+    # dlib 얼굴 검출기 초기화
+    detector = dlib.get_frontal_face_detector()
+
+    # 얼굴 위치 인식
+    face_locations = detector(image_array, 2)
+    print('face_locations : ', face_locations)
+    # 얼굴 영역 추출
+    if len(face_locations) > 0:
+        # 첫 번째 얼굴만 처리
+        top, right, bottom, left = (face_locations[0].top(), face_locations[0].right(),
+                                    face_locations[0].bottom(), face_locations[0].left())
+
+        # 얼굴 영역을 크롭
+        face_image = Image.fromarray(image_array[top:bottom, left:right])
+        print(face_image)
+        # 이미지 크기 조정 (모델에 맞게)
+        resized_face_image = face_image.resize((100, 100))
+        print(resized_face_image)
+
+        # 이미지를 배열로 변환
+        face_array = np.array(resized_face_image)
+
+        # 이미지의 평균 색상 계산 (RGB 값 사용)
+        average_color_rgb = np.mean(face_array, axis=(0, 1)).astype(int)
+        scaled_rgb = average_color_rgb / 255.0
+
+        # RGB 값을 HSV로 변환
+        average_color_hsv = colorsys.rgb_to_hsv(*scaled_rgb)
+
+        # RGB 값을 YCbCr로 변환
+        average_color_ycbcr = colorsys.rgb_to_yiq(*scaled_rgb)
+
+        # 입력 데이터를 모델에 맞게 변환
+        X = np.concatenate([scaled_rgb, average_color_hsv, average_color_ycbcr], axis=0).reshape(1, -1)
+
+        # PolynomialFeatures를 사용하여 피처 확장
+        poly = PolynomialFeatures(degree=2, include_bias=False)
+        input_data = poly.fit_transform(X)
+
+        print(input_data)
+
+        # 모델 예측
+        classifier_personal_color = pmodel.predict(input_data)
+        print(classifier_personal_color)
+
+        # 예측 결과 출력
+        print(f"퍼스널 컬러 : {classifier_personal_color}")
+
+        return classifier_personal_color
+
+
+    else:
+        print("이미지에서 얼굴을 찾을 수 없습니다.")
+
+# 이미지 파일 저장 경로
+IMAGE_PATHS = {
+    0: '../static/image/result_spring.jpg',
+    1: '../static/image/result_summer.jpg',
+    2: '../static/image/result_autumn.jpg',
+    3: '../static/image/result_winter.jpg',
+}
+
+IMAGE_PATHS_lip = {
+    0: '../static/image/result_spring.jpg',
+    1: '../static/image/result_summer.jpg',
+    2: '../static/image/result_autumn.jpg',
+    3: '../static/image/result_winter.jpg',
+}
+
+IMAGE_PATHS_eye = {
+    0: '../static/image/result_spring.jpg',
+    1: '../static/image/result_summer.jpg',
+    2: '../static/image/result_autumn.jpg',
+    3: '../static/image/result_winter.jpg',
+}
+
+
+IMAGE_PATHS_blur = {
+    0: '../static/image/result_spring.jpg',
+    1: '../static/image/result_summer.jpg',
+    2: '../static/image/result_autumn.jpg',
+    3: '../static/image/result_winter.jpg',
+}
+
+
+def personalcolorresult_view(request):
+    try:
+        # 데이터베이스에서 가장 최근에 추가된 Faceshape 인스턴스를 가져옵니다.
+        latest_personal = Personal.objects.latest('personal_dt')
+
+        # MEDIA_ROOT를 사용하여 전체 파일 경로를 구성합니다.
+        img_path = os.path.join(settings.MEDIA_ROOT, str(latest_personal.personal_imgpath))
+
+        # 이미지 분류 함수를 호출합니다.
+        classifier_personal_color = classify_personal_color(img_path)
+
+        # 결과 값에 따른 퍼스널 컬러 문자열
+        personal_color_string = ''
+        if classifier_personal_color[0] == 0:
+            personal_color_string = '봄 웜톤'
+        elif classifier_personal_color[0] == 1:
+            personal_color_string = '여름 쿨톤'
+        elif classifier_personal_color[0] == 2:
+            personal_color_string = '가을 웜톤'
+        elif classifier_personal_color[0] == 3:
+            personal_color_string = '겨울 쿨톤'
+
+        # personal_color에 따른 이미지 경로
+        result_image_path = IMAGE_PATHS.get(classifier_personal_color[0])
+        result_image_path_lip = IMAGE_PATHS_lip.get(classifier_personal_color[0])
+        result_image_path_eye = IMAGE_PATHS_eye.get(classifier_personal_color[0])
+        result_image_path_blur = IMAGE_PATHS_blur.get(classifier_personal_color[0])
+
+        # 분류 결과를 템플릿에 전달합니다.
+        context = {
+            'personal_color': personal_color_string,
+            'result_image_path': result_image_path,
+            'result_image_path_lip': result_image_path_lip,
+            'result_image_path_eye': result_image_path_eye,
+            'result_image_path_blur': result_image_path_blur,
+        }
+        return render(request, 'personalcolorresult.html', context)
+    except Personal.DoesNotExist:
+        # Faceshape 인스턴스가 없는 경우 오류 메시지와 함께 응답합니다.
+        return JsonResponse({'status': 'fail', 'message': 'No face record found.'})
+    except Exception as e:
+        # 기타 예외 처리
+        return JsonResponse({'status': 'fail', 'message': str(e)})
+    return render(request, 'personalcolorresult.html')
+
 
 @csrf_exempt
 def upload_faceshape_image(request):
@@ -172,7 +309,7 @@ def upload_scalp_image(request):
         return JsonResponse({'status': 'success', 'faceshape_id': new_scalp.scalp_id})
     return JsonResponse({'status': 'fail'})
 
-
+'''
 # 모델 로딩
 dupi_model1 = load_model(os.path.join(settings.BASE_DIR, 'C:/Users/Cho/PycharmProjects/Final-Project/mainapp/models', 'dupi_model1.hdf5'))
 dupi_model2 = load_model(os.path.join(settings.BASE_DIR, 'C:/Users/Cho/PycharmProjects/Final-Project/mainapp/models', 'dupi_model2.hdf5'))
@@ -282,3 +419,4 @@ def hairlossresult_view(request):
 #     except Exception as e:
 #         # 기타 예외 처리
 #         return JsonResponse({'status': 'fail', 'message': str(e)})
+'''
