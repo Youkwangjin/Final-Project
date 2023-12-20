@@ -11,14 +11,14 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 # 로컬 환경에서 실행 시킬 때
-FMODEL_PATH = 'C:/work/pysou/makemeuppro/mainapp/models/shape_vgg16_process1.h5'
-PMODEL_PATH = 'C:/work/pysou/makemeuppro/mainapp/models/ensemble_soft_model_poly.h5'
-DMODEL_PATH1 = 'C:/work/pysou/makemeuppro/mainapp/models/aram_model1.hdf5'
-DMODEL_PATH2 = 'C:/work/pysou/makemeuppro/mainapp/models/aram_model2.hdf5'
-DMODEL_PATH3 = 'C:/work/pysou/makemeuppro/mainapp/models/aram_model3.hdf5'
-DMODEL_PATH4 = 'C:/work/pysou/makemeuppro/mainapp/models/aram_model4.hdf5'
-DMODEL_PATH5 = 'C:/work/pysou/makemeuppro/mainapp/models/aram_model5.hdf5'
-DMODEL_PATH6 = 'C:/work/pysou/makemeuppro/mainapp/models/aram_model6.hdf5'
+FMODEL_PATH = 'C:/Users/user/git/Final-Project/mainapp/models/shape_vgg16_process1'
+PMODEL_PATH = 'C:/Users/user/git/Final-Project/mainapp/models/ensemble_soft_model_poly.h5'
+DMODEL_PATH1 = 'C:/Users/user/git/Final-Project/mainapp/models/scalp_model1.hdf5'
+DMODEL_PATH2 = 'C:/Users/user/git/Final-Project/mainapp/models/scalp_model2.hdf5'
+DMODEL_PATH3 = 'C:/Users/user/git/Final-Project/mainapp/models/scalp_model3.hdf5'
+DMODEL_PATH4 = 'C:/Users/user/git/Final-Project/mainapp/models/scalp_model4.hdf5'
+DMODEL_PATH5 = 'C:/Users/user/git/Final-Project/mainapp/models/scalp_model5.hdf5'
+DMODEL_PATH6 = 'C:/Users/user/git/Final-Project/mainapp/models/scalp_model6.hdf5'
 
 '''
 if DEBUG:
@@ -77,12 +77,12 @@ WSGI_APPLICATION = "makemeuppro.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": os.getenv('SQL_ENGINE', 'django.db.backends.mysql'),
-        "NAME": os.getenv('SQL_DATABASE', 'makemeupdb'),
-        "USER": os.getenv('SQL_USER', 'root'),
-        "PASSWORD": os.getenv('SQL_PASSWORD', 'seoho123'),
-        "HOST": os.getenv('SQL_HOST', 'localhost'),
-        "PORT": os.getenv('SQL_PORT', '3306'),
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "makemeupdb",
+        "USER": "root",
+        "PASSWORD": "seoho123",
+        "HOST": "localhost",
+        "PORT": "3307",
     }
 }
 
