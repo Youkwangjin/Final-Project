@@ -24,6 +24,7 @@
     left: 10px;
     width: 470px;
     height: 300px;
+
     margin: 0 auto 0;
     border-bottom: 3px solid #aaa;
     text-align: center;
@@ -38,25 +39,30 @@
 
 .graphWrap .graph > div#item1 {
     left: 0;
+    max-height: 250px;
     background: #b9fc76;
 }
 
 .graphWrap .graph > div#item2 {
     left: 100px;
+    max-height: 250px;
     background: #57b4c1;
 }
 
 .graphWrap .graph > div#item3 {
     left: 200px;
+    max-height: 250px;
     background: #f9f4d2;
 }
 
 .graphWrap .graph > div#item4 {
     left: 300px;
+    max-height: 250px;
     background: #fb8851;
 }
 
 .graphWrap .graph > div#item5 {
     left: 400px;
+    max-height: 250px;
     background: #b90f43;
 }
