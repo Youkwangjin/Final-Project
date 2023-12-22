@@ -25,12 +25,12 @@ fmodel = load_model(settings.FMODEL_PATH)
 pmodel = joblib.load(settings.PMODEL_PATH)
 
 # 혁진 모델
-dupi_model1 = load_model(settings.DMODEL_PATH1)
-dupi_model2 = load_model(settings.DMODEL_PATH2)
-dupi_model3 = load_model(settings.DMODEL_PATH3)
-dupi_model4 = load_model(settings.DMODEL_PATH4)
-dupi_model5 = load_model(settings.DMODEL_PATH5)
-dupi_model6 = load_model(settings.DMODEL_PATH6)
+scalp_model1 = load_model(settings.DMODEL_PATH1)
+scalp_model2 = load_model(settings.DMODEL_PATH2)
+scalp_model3 = load_model(settings.DMODEL_PATH3)
+scalp_model4 = load_model(settings.DMODEL_PATH4)
+scalp_model5 = load_model(settings.DMODEL_PATH5)
+scalp_model6 = load_model(settings.DMODEL_PATH6)
 
 
 def main(request):
@@ -119,7 +119,7 @@ def classify_personal_color(img_path):
         # 입력 데이터를 모델에 맞게 변환
         X = np.concatenate([scaled_rgb, average_color_hsv, average_color_ycbcr], axis=0).reshape(1, -1)
 
-        # PolynomialFeatures를 사용하여 피처 확장
+        # PolynomialFeatures 를 사용하여 피처 확장
         poly = PolynomialFeatures(degree=2, include_bias=False)
         input_data = poly.fit_transform(X)
 
@@ -174,8 +174,6 @@ def personalcolorresult_view(request):
     except Exception as e:
         # 기타 예외 처리
         return JsonResponse({'status': 'fail', 'message': str(e)})
-
-
 
 @csrf_exempt
 def upload_faceshape_image(request):
@@ -291,8 +289,8 @@ def classify_scalp_type(img_path):
     img_array = np.expand_dims(img_array, axis=0)
     img_array /= 255.0
 
-    predictions = [dupi_model1.predict(img_array), dupi_model4.predict(img_array), dupi_model3.predict(img_array),
-                   dupi_model2.predict(img_array), dupi_model5.predict(img_array), dupi_model6.predict(img_array)]
+    predictions = [scalp_model1.predict(img_array), scalp_model4.predict(img_array), scalp_model3.predict(img_array),
+                   scalp_model2.predict(img_array), scalp_model5.predict(img_array), scalp_model6.predict(img_array)]
     class_names = [
         ['모낭사이홍반 : 양호', '모낭사이홍반 : 경증', '모낭사이홍반 : 중등도', '모낭사이홍반 : 중증'],
         ['비듬 : 양호', '비듬 : 경증', '비듬 : 중등도', '비듬 : 중증'],
@@ -314,12 +312,12 @@ def classify_scalp_type(img_path):
         }
 
     # 이진 분류 결과 생성
-    result_model1 = 'Good' if results['model1']['predicted_class'] == 0 else 'Bad'
-    result_model2 = 'Good' if results['model2']['predicted_class'] == 0 else 'Bad'
-    result_model3 = 'Good' if results['model3']['predicted_class'] == 0 else 'Bad'
-    result_model4 = 'Good' if results['model4']['predicted_class'] == 0 else 'Bad'
-    result_model5 = 'Good' if results['model5']['predicted_class'] == 0 else 'Bad'
-    result_model6 = 'Good' if results['model6']['predicted_class'] == 0 else 'Bad'
+    result_model1 = 'Good' if results['model1']['predicted_class'] == 0 or results['model1']['predicted_class'] == 1 else 'Bad'
+    result_model2 = 'Good' if results['model2']['predicted_class'] == 0 or results['model2']['predicted_class'] == 1 else 'Bad'
+    result_model3 = 'Good' if results['model3']['predicted_class'] == 0 or results['model3']['predicted_class'] == 1 else 'Bad'
+    result_model4 = 'Good' if results['model4']['predicted_class'] == 0 or results['model4']['predicted_class'] == 1 else 'Bad'
+    result_model5 = 'Good' if results['model5']['predicted_class'] == 0 or results['model5']['predicted_class'] == 1 else 'Bad'
+    result_model6 = 'Good' if results['model6']['predicted_class'] == 0 or results['model6']['predicted_class'] == 1 else 'Bad'
 
     # 이진 분류 결과에 따른 최종 결과 생성
     if result_model1 == 'Good' and result_model2 == 'Good' and result_model3 == 'Good' and result_model4 == 'Good' and result_model5 == 'Good' and result_model6 == 'Good':
