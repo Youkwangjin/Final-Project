@@ -39,6 +39,8 @@
 # 데이터 분석 과정
 
 # 웹 개발 과정
+![데이터분석](https://github.com/Youkwangjin/Final-Project/assets/117841714/b23d5b49-2349-48eb-95b4-1405605e99bf)
+
 
 # 미래 개선 방안
 
