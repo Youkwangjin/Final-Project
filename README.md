@@ -38,6 +38,37 @@
 
 # 데이터 분석 과정
 
+📌 **퍼스널 컬러**
+1. 데이터 수집
+   
+- 퍼스널 컬러 논문자료를 토대로 각 유형별 4개의 색상에 대한 RGB값 수집 
+    ![수집1](https://github.com/Youkwangjin/Final-Project/assets/138757075/ab0536be-616f-4134-bfbc-7a21b5c3f1de)
+
+2. 데이터 전처리
+- 수집된 RGB값에 대해 HSV, YCbCr 값을 추가해 각각의 색상값에 대해 유사한 색상 증강 : 총 1111개의 색상 데이터로 증강
+  ![증강1](https://github.com/Youkwangjin/Final-Project/assets/138757075/f24bcc27-2aca-4420-83b7-fdd18a7cce5f)
+- 증강된 색상값에서 흰색에 가까운 색상 및 중복 색상값 제거
+   : 총 875개의 색상 데이터로 조정
+
+3. 데이터 분석 :  모델 설계 및 학습
+
+- 머신러닝 모델 설계
+  - Ensemble(voting = soft) 모델 설계
+      SVM, KNN, LDA, LR_L2, RandomForest, GradientBoost 모델 생성 및 학습 후 Ensemble모델을 통해 성능 개선
+      ![소프트](https://github.com/Youkwangjin/Final-Project/assets/138757075/94ff13da-810e-4899-80c6-8f6e487df585)
+  - Ensemble(voting = hard) 모델 설계
+      SVM, KNN, LDA, LR_L2, RandomForest, GradientBoost 모델 생성 및 학습 후 Ensemble모델을 통해 성능 개선
+    ![하드](https://github.com/Youkwangjin/Final-Project/assets/138757075/6530318c-396d-449a-8551-4ee05573e55c)
+  - CatBoostClassifier 모델 설계
+  - 모델 성능평가
+      3가지 모델 학습 결과 soft 방식으로 voting한 Ensemble 모델이 성능이 가장 우수해 머신러닝 모델에서는 Ensemble(voting = soft) 채택
+      ![각 모델 별 혼동행렬](https://github.com/Youkwangjin/Final-Project/assets/138757075/1287df48-e57d-4344-8fab-3f044815b274)
+
+
+     
+
+- 딥러닝 모델 설계
+
 # MSA 아키텍쳐
 
 ![image](https://github.com/Youkwangjin/Final-Project/assets/117841714/d020f876-c98d-4daa-95df-e6e4cc0383a3)
