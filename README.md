@@ -69,9 +69,18 @@
 
 - 딥러닝 모델 설계
 
-# MSA 아키텍쳐
+# 데이터 분석 과정
 
-![image](https://github.com/Youkwangjin/Final-Project/assets/117841714/d020f876-c98d-4daa-95df-e6e4cc0383a3)
+실시간 웹 캠으로 찍은 사진들을 ajax처리 방식으로 DB에 저장
+
+![image](https://github.com/Youkwangjin/Final-Project/assets/117841714/e127f81b-f7b9-4ccb-99d2-bf0651550042)
+
+
+
+# Docker
+
+![image](https://github.com/Youkwangjin/Final-Project/assets/117841714/b86fe2a7-eca4-4df3-aac9-5167eb9ce895)
+
 
 
 # 미래 개선 방안
