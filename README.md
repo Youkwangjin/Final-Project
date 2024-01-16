@@ -1,3 +1,5 @@
+<img src="https://capsule-render.vercel.app/api?type=waving&height=200&text=Make%20Me%20Up&fontAlign=50&fontAlignY=40&color=gradient"/>
+
 # AI를 활용한 스타일 추천 서비스 (Team Project)
 - 참여자 : 최민혁, 조혁진, 이재민, 유광진, 이서호, 김효림 (6명)
 - 총 개발기간 : 2023/11/23 ~ 2023/12/25 (4주)
